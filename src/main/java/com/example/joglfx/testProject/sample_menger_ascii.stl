@@ -1,0 +1,30 @@
+solid b'Exported from Blender-2.76 (sub 0)\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+facet normal -0.04938271 0.0 0.0
+  outer loop
+    vertex -1.0 -0.7777778 -1.0
+    vertex -1.0 -1.0 -1.0
+    vertex -1.0 -1.0 -0.7777778
+  endloop
+endfacet
+facet normal -0.04938271 0.0 0.0
+  outer loop
+    vertex -1.0 -1.0 -0.7777778
+    vertex -1.0 -0.7777778 -0.7777778
+    vertex -1.0 -0.7777778 -1.0
+  endloop
+endfacet
+facet normal 0.0 -0.04938271 0.0
+  outer loop
+    vertex -1.0 -1.0 -0.7777778
+    vertex -1.0 -1.0 -1.0
+    vertex -0.7777778 -1.0 -1.0
+  endloop
+endfacet
+facet normal 0.0 -0.04938271 0.0
+  outer loop
+    vertex -0.7777778 -1.0 -1.0
+    vertex -0.7777778 -1.0 -0.7777778
+    vertex -1.0 -1.0 -0.7777778
+  endloop
+endfacet
+endsolid b'Exported from Blender-2.76 (sub 0)\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'

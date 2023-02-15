@@ -12,22 +12,21 @@ import java.io.InputStream;
 
 
 public class MainApp extends Application{
+    /**
+     * Main Application - Program starts here
+     * @param stage
+     * @throws IOException
+     */
 
     @Override
     public void start(Stage stage) throws IOException {
+
+        // Load Main Window and setup
         FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("mainwindow-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1400, 1000);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
-
-        File vertexShader = new File("vertex_shader.glsl");
-        InputStream in = MainApp.class.getClassLoader().getResourceAsStream(vertexShader.getPath());
-
-
-        if(vertexShader.exists() && !vertexShader.isDirectory()) {
-            System.out.println("Datei existiert");
-        }
 
     }
 

@@ -35,7 +35,7 @@ public class FragmentShader extends Shader {
     public int createShader() {
 
         // setup input stream with fragment shader file
-        File fragmentShader = new File("fragment_shader.glsl");
+        File fragmentShader = new File(pathName);
         String shaderCode;
         try (InputStream in = new FileInputStream(fragmentShader)) {
             shaderCode = new Scanner(in, "UTF-8").useDelimiter("\\A").next();

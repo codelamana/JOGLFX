@@ -30,20 +30,14 @@ public class VertexShader extends Shader {
     public int createShader() {
 
         // setup file stream from glsl file and get shader code
-        File vertexShader = new File("vertex_shader.glsl");
+        File vertexShader = new File(pathName);
         System.out.println(vertexShader);
 
         String shaderCode;
         try (InputStream in = new FileInputStream(vertexShader)) {
 
-            System.out.println(new File("").getAbsolutePath());
-
-
-            if (vertexShader.exists() && !vertexShader.isDirectory()) {
-                System.out.println("Datei existiert nicht");
-            }
-
             shaderCode = new Scanner(in, "UTF-8").useDelimiter("\\A").next();
+
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

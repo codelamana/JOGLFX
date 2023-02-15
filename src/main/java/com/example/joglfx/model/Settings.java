@@ -13,8 +13,8 @@ public class Settings {
 
     public Settings() {
         glFiles = new HashMap<>();
-        glFiles.put("vertexShader", "com/example/joglfx/gl/fragment_shader.glsl");
-        glFiles.put("fragmentShader", "/testProject/fragment_shader.glsl");
+        glFiles.put("vertexShader", "vertex_shader.glsl");
+        glFiles.put("fragmentShader", "fragment_shader.glsl");
 
 
         glCoordinates = new HashMap<>();

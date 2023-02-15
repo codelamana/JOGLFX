@@ -22,6 +22,8 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
     /**
      * Main Model View, OGL drawing takes place here, as well as animation
      * and response for key events
+     *
+     * All Viewing related stuff is accessed over this class
      */
 
 

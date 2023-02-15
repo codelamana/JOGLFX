@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 
 import javafx.embed.swing.SwingNode;
 import javafx.scene.control.Menu;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 
 
@@ -37,6 +38,8 @@ public class MainWindowController implements Initializable, GLEventListener {
 
     @FXML
     Button animatorToggle;
+    @FXML
+    GridPane globalSettings;
 
     private GLU glu = new GLU();
 
@@ -74,6 +77,11 @@ public class MainWindowController implements Initializable, GLEventListener {
 
             }
         });
+
+        for (int i = 0; i < 5; i++) {
+            globalSettings.add(new Label("Einstellung " + i), 0, i);
+            globalSettings.add(new Label("Wert xy"), 1, i);
+        }
     }
 
     @Override

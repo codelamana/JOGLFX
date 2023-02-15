@@ -82,6 +82,7 @@ public class MainWindowController implements Initializable, GLEventListener {
             globalSettings.add(new Label("Einstellung " + i), 0, i);
             globalSettings.add(new Label("Wert xy"), 1, i);
         }
+
     }
 
     @Override

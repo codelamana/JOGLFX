@@ -6,8 +6,7 @@ import com.example.joglfx.gui.ModelViewer;
 import com.jogamp.opengl.GL2;
 
 
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.Scanner;
@@ -37,8 +36,14 @@ public class FragmentShader extends Shader {
 
         // setup input stream with fragment shader file
         File fragmentShader = new File("fragment_shader.glsl");
-        InputStream in = MainApp.class.getClassLoader().getResourceAsStream(fragmentShader.getPath());
-        String shaderCode = new Scanner(in, "UTF-8").useDelimiter("\\A").next();
+        String shaderCode;
+        try (InputStream in = new FileInputStream(fragmentShader)) {
+            shaderCode = new Scanner(in, "UTF-8").useDelimiter("\\A").next();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         // create and compile shader in gl context
         this.shader = gl.glCreateShader(gl.GL_FRAGMENT_SHADER);

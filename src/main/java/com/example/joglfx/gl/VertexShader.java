@@ -5,9 +5,7 @@ import com.example.joglfx.MainWindowController;
 import com.example.joglfx.gui.ModelViewer;
 import com.jogamp.opengl.GL2;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.Scanner;
@@ -34,14 +32,23 @@ public class VertexShader extends Shader {
         // setup file stream from glsl file and get shader code
         File vertexShader = new File("vertex_shader.glsl");
         System.out.println(vertexShader);
-        InputStream in = MainApp.class.getClassLoader().getResourceAsStream(vertexShader.toURI().getPath());
+
+        String shaderCode;
+        try (InputStream in = new FileInputStream(vertexShader)) {
+
+            System.out.println(new File("").getAbsolutePath());
 
 
-        if(vertexShader.exists() && !vertexShader.isDirectory()) {
-            System.out.println("Datei existiert nicht");
+            if (vertexShader.exists() && !vertexShader.isDirectory()) {
+                System.out.println("Datei existiert nicht");
+            }
+
+            shaderCode = new Scanner(in, "UTF-8").useDelimiter("\\A").next();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-
-        String shaderCode = new Scanner(in, "UTF-8").useDelimiter("\\A").next();
 
         // create vertex shader in GL context
         this.shader = gl.glCreateShader(gl.GL_VERTEX_SHADER);

@@ -1,5 +1,6 @@
 package com.example.joglfx;
 
+import com.example.joglfx.gl.VertexShader;
 import com.example.joglfx.gui.ModelViewer;
 import com.example.joglfx.model.Settings;
 import com.jogamp.opengl.*;
@@ -8,12 +9,19 @@ import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.FPSAnimator;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 import javafx.embed.swing.SwingNode;
+import javafx.scene.control.Menu;
+import javafx.stage.FileChooser;
 
 
 import javax.swing.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -24,6 +32,12 @@ public class MainWindowController implements Initializable, GLEventListener {
     @FXML
     SwingNode glcanvas;
 
+    @FXML
+    Menu fileMenu;
+
+    @FXML
+    Button animatorToggle;
+
     private GLU glu = new GLU();
 
     ModelViewer modelViewer;
@@ -31,9 +45,12 @@ public class MainWindowController implements Initializable, GLEventListener {
 
 
     @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
+    public void onToggleAnimation(){
+        modelViewer.toggleAnimation();
     }
+
+
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

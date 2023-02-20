@@ -11,6 +11,8 @@ module com.example.joglfx {
     requires gluegen.rt;
     requires org.json;
 
+
     opens com.example.joglfx to javafx.fxml;
+    opens com.example.joglfx.model to javafx.fxml;
     exports com.example.joglfx;
 }

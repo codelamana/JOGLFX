@@ -105,6 +105,9 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
         //Plane p = new Plane(0,0,0, 0,1,0, 1,0,0, 1,1,0);
         BufferManager.printFloatBuffer(this.modelVertexFloatBuffer);
 
+        gl.glGenVertexArrays(1, vaos, 0);
+        gl.glBindVertexArray(vaos[0]);
+
         gl.glViewport(x,y,width, height);
 
         aspect = (float) width / (float) height;
@@ -128,8 +131,6 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
 
         gl.glUniformMatrix4fv(mvpLoc, 1, false, mvpMat.get(mvpBuffer));
 
-        gl.glGenVertexArrays(1, vaos, 0);
-        gl.glBindVertexArray(vaos[0]);
 
         gl.glGenBuffers(3, vbos, 0);
 

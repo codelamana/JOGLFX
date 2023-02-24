@@ -9,7 +9,7 @@ module com.example.joglfx {
     requires org.kordamp.bootstrapfx.core;
     requires javafx.swing;
     requires gluegen.rt;
-    requires org.json;
+    requires org.joml;
 
 
     opens com.example.joglfx to javafx.fxml;

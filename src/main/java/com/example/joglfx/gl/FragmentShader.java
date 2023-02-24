@@ -1,9 +1,7 @@
 package com.example.joglfx.gl;
 
-import com.example.joglfx.MainApp;
-import com.example.joglfx.MainWindowController;
-import com.example.joglfx.gui.ModelViewer;
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GL4;
 
 
 import java.io.*;
@@ -20,7 +18,7 @@ public class FragmentShader extends Shader {
      */
 
 
-    public FragmentShader(GL2 gl, String path) {
+    public FragmentShader(GL4 gl, String path) {
         // invoke Shader and set gl context and path
         super(gl, path);
     }

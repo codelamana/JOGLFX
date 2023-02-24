@@ -30,6 +30,7 @@ public class GlSettingsPaneBuilder {
         this.items.add(new SettingsItem<vec3>("Center", SettingsType.VEC3));
         this.items.add(new SettingsItem<vec3>("Camera", SettingsType.VEC3));
         this.items.add(new SettingsItem<vec3>("Up", SettingsType.VEC3));
+        this.items.add(new SettingsItem<Integer>("Frame Rate", SettingsType.INT));
         this.items.add(new SettingsItem<VertexShader>("Vertex Shader Pfad", SettingsType.PATH));
         this.items.add(new SettingsItem<VertexShader>("Fragment Shader Pfad", SettingsType.PATH));
     }

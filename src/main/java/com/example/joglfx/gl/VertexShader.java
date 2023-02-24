@@ -1,9 +1,7 @@
 package com.example.joglfx.gl;
 
-import com.example.joglfx.MainApp;
-import com.example.joglfx.MainWindowController;
-import com.example.joglfx.gui.ModelViewer;
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GL4;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -18,7 +16,7 @@ public class VertexShader extends Shader {
      * @param path path to glsl file
      */
 
-    public VertexShader(GL2 gl, String path) {
+    public VertexShader(GL4 gl, String path) {
         super(gl, path);
     }
 

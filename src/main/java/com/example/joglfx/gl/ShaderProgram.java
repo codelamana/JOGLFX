@@ -1,6 +1,7 @@
 package com.example.joglfx.gl;
 
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GL4;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -15,14 +16,14 @@ public class ShaderProgram {
     VertexShader v = null;
     FragmentShader f = null;
 
-    GL2 gl;
+    GL4 gl;
     int programID;
 
     /**
      * Setting up Program class
      * @param gl current OGL Context
      */
-    public ShaderProgram(GL2 gl) {
+    public ShaderProgram(GL4 gl) {
         this.gl = gl;
     }
 

@@ -62,6 +62,7 @@ public class MainWindowController implements Initializable {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 glcanvas.setContent(modelViewer);
+                modelViewer.startAnimation();
             }
         });
 

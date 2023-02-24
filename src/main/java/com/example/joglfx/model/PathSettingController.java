@@ -10,7 +10,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PathsettingController extends SettingsController implements Initializable {
+public class PathSettingController extends SettingsController implements Initializable {
 
     @FXML
     Label title;
@@ -30,7 +30,7 @@ public class PathsettingController extends SettingsController implements Initial
 
     }
 
-    public PathsettingController(String t) {
+    public PathSettingController(String t) {
         this.titleString = t;
     }
 

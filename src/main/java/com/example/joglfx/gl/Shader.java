@@ -1,6 +1,7 @@
 package com.example.joglfx.gl;
 
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GL4;
 
 public class Shader {
     /**
@@ -9,14 +10,14 @@ public class Shader {
 
     int shader;
     String pathName;
-    GL2 gl;
+    GL4 gl;
 
     /**
      * set gl context and path file
      * @param gl gl context of app
      * @param path path to shader file
      */
-    public Shader(GL2 gl, String path) {
+    public Shader(GL4 gl, String path) {
         this.pathName = path;
         this.gl = gl;
         this.shader = 0;

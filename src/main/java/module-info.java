@@ -12,7 +12,8 @@ module com.example.joglfx {
     requires org.joml;
 
 
-    opens com.example.joglfx to javafx.fxml;
-    opens com.example.joglfx.model to javafx.fxml;
-    exports com.example.joglfx;
+    opens com.jakob.joglfx to javafx.fxml;
+    opens com.jakob.joglfx.model to javafx.fxml;
+    exports com.jakob.joglfx;
+    opens com.jakob.joglfx.model.settingscontroller to javafx.fxml;
 }

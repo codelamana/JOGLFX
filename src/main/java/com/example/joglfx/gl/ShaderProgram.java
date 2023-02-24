@@ -77,6 +77,7 @@ public class ShaderProgram {
             System.out.println("Error creating shader program");
         }
 
+        System.out.println("Program linked correctly");
         return this.programID;
     }
 }

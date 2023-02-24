@@ -1,17 +1,6 @@
-#version 120
-
-in vec3 N;
-in vec3 v;
-//varying vec3 lightpos;
+#version 430
 
 out vec4 color;
-
-vec3 lightpos = vec3(8,8,0);
-vec4 ambient = vec4(0,0,0,1);
-vec4 diffuse = vec4(0.6,0.6,0.6,1);
-vec4 specular = vec4(0.6, 0.6, 0.6, 0.7);
-
-int shininess = 50;
 
 void main (void)
 {
@@ -29,6 +18,6 @@ void main (void)
     vec4 Ispec = specular * pow(max(dot(R,E),0.0), shininess);*/
 
     // write Total Color:
-    color = vec4(1,1,1,1);//Iamb + Idiff + Ispec;
+    color = vec4(1,0,1,1);//Iamb + Idiff + Ispec;
 
 }

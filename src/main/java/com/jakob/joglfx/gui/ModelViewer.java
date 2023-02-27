@@ -3,13 +3,16 @@ package com.jakob.joglfx.gui;
 import com.jakob.joglfx.geometry.BufferManager;
 import com.jakob.joglfx.geometry.primitives.Cube;
 import com.jakob.joglfx.gl.ShaderProgram;
-import com.jakob.joglfx.model.Settings;
 import com.jakob.joglfx.object.OBJloader;
 import com.jakob.joglfx.object.ObjectModel;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.util.FPSAnimator;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -28,7 +31,6 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
 
     private FPSAnimator animator;
 
-    private Settings settingsContext;
     private int programID;
 
     //ObjectModel model;
@@ -79,6 +81,9 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
     private Vector3f yaxis;
     private Matrix4f view;
 
+    private SimpleIntegerProperty framerate = new SimpleIntegerProperty(50);
+    private SimpleObjectProperty<Vector3f> eyeProperty = new SimpleObjectProperty<>(eye);
+
 
     /**
      * Initialize ModelViewer Object, set GL context, add GLUT and Animator to Frame
@@ -89,7 +94,8 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
         super(userCapsRequest);
         this.addGLEventListener(this);
         this.animator = new FPSAnimator(this, 35);
-
+        this.framerate.addListener((observableValue, number, t1) -> setFramerate(t1.intValue()));
+        this.eyeProperty.addListener((observableValue, vector3f, t1) -> setEyeCoordinates(t1));
     }
 
     /**
@@ -104,7 +110,7 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
         //bufferManager.addObject(new Cube(1,1,1, 0.5,0.5,0.5));
         bufferManager.addObject(new Cube(0,0,0, 1,1,1));
         OBJloader loader = new OBJloader("teapot.obj");
-        bufferManager.addObject(loader.load());
+        //bufferManager.addObject(loader.load());
 
         this.modelVertexFloatBuffer = bufferManager.getBufferedVertexData();
         this.modelNormalFloatBuffer = bufferManager.getBufferedNormalData();
@@ -211,6 +217,30 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
         else this.animator.start();
     }
 
+    public void setFramerate(int fps){
+        if(this.animator.isAnimating()) {
+            this.animator.stop();
+            this.animator.setFPS(fps);
+            this.animator.start();
+        } else {
+            this.animator.setFPS(fps);
+        }
+    }
+
+    public SimpleIntegerProperty getFramerateProperty(){
+        return this.framerate;
+    }
+
+    public void setEyeCoordinates(Vector3f newEye){
+        this.eye = newEye;
+        System.out.println("New coords are " + this.eye);
+    }
+
+    public SimpleObjectProperty<Vector3f> eyeVectorProperty() {
+        return eyeProperty;
+    }
+
+
     /**
      * Init function for GL, this is called in the beginning to setup everything gl related
      * @param drawable
@@ -221,8 +251,8 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
 
         // setup shader program and add shader stages
         ShaderProgram p = new ShaderProgram(gl);
-        p.addVertexShader(settingsContext.getGlFiles().get("vertexShader"));
-        p.addFragmentShader(settingsContext.getGlFiles().get("fragmentShader"));
+        p.addVertexShader("vertex_shader.glsl");
+        p.addFragmentShader("fragment_shader.glsl");
         this.programID = p.createProgram();
 
     }
@@ -277,7 +307,4 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
 
     }
 
-    public void setSettingsContext(Settings s){
-        this.settingsContext = s;
-    }
 }

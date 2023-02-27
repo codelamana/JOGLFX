@@ -1,42 +1,36 @@
 package com.jakob.joglfx.model;
 
 
-import com.jakob.joglfx.model.settingscontroller.FloatSettingController;
 import com.jakob.joglfx.model.settingscontroller.IntSettingController;
 import com.jakob.joglfx.model.settingscontroller.PathSettingController;
+import com.jakob.joglfx.model.settingscontroller.SettingsController;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
-public class SettingsItem<T>{
 
-    public enum SettingsType{
-        PATH,
-        VEC3,
-        INT
-    }
+public abstract class SettingsItem<T>{
 
-   SettingsController settingsController;
-
-   T Value;
+   protected SettingsController<T> settingsController;
+   protected ChangeListener<T> changeListener;
+   protected SimpleObjectProperty<T> property;
 
    String title;
-   String fxml;
+   protected String fxml;
 
 
-    public SettingsItem(String title, SettingsType type) {
+    public SettingsItem(String title) {
         this.title = title;
-        if(type == SettingsType.VEC3){
-            settingsController = new FloatSettingController(title);
-            fxml = "settings/floatsetting.fxml";
-        } else if (type == SettingsType.PATH) {
-            settingsController = new PathSettingController(title);
-            fxml = "settings/pathsetting.fxml";
-        } else if (type == SettingsType.INT) {
-        settingsController = new IntSettingController(title);
-        fxml = "settings/intsetting.fxml";
     }
 
-    }
+    public abstract ChangeListener<T> getChangeListener();
 
-    public SettingsController getSettingsController() {
+
+    public abstract SimpleObjectProperty<T> getProperty();
+
+
+    public SettingsController<T> getSettingsController() {
         return settingsController;
     }
 

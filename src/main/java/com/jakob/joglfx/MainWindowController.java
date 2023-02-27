@@ -1,8 +1,11 @@
 package com.jakob.joglfx;
 
-import com.jakob.joglfx.gui.GlSettingsPaneBuilder;
+import com.jakob.joglfx.gui.SettingsPaneBuilder;
 import com.jakob.joglfx.gui.ModelViewer;
-import com.jakob.joglfx.model.Settings;
+
+import com.jakob.joglfx.model.SettingNode;
+import com.jakob.joglfx.model.settingsitems.IntSettingsItem;
+import com.jakob.joglfx.model.settingsitems.VectorSettingsItem;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.glu.GLU;
 import javafx.fxml.FXML;
@@ -31,10 +34,8 @@ public class MainWindowController implements Initializable {
     @FXML
     VBox glSettingsContainer;
 
-    private GLU glu = new GLU();
-
     ModelViewer modelViewer;
-    Settings settings;
+
 
 
     @FXML
@@ -55,25 +56,32 @@ public class MainWindowController implements Initializable {
         //canvas.addGLEventListener(this);
 
         modelViewer = new ModelViewer(capabilities);
-        this.settings = new Settings();
-        settings.addModelViewer(modelViewer);
-        modelViewer.setSettingsContext(settings);
 
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                glcanvas.setContent(modelViewer);
-                modelViewer.startAnimation();
-            }
+
+        SwingUtilities.invokeLater(() -> {
+            glcanvas.setContent(modelViewer);
+            modelViewer.startAnimation();
         });
 
         splitPane.setDividerPositions(0.2, 0.8);
 
-        GlSettingsPaneBuilder builder = new GlSettingsPaneBuilder();
+        SettingNode settingsRoot = new SettingNode("Main Container", null, SettingNode.SettingsType.CONTAINER);
+        SettingNode glSettings = new SettingNode("GL Setting Container", null, SettingNode.SettingsType.CONTAINER);
+        settingsRoot.addNode(glSettings);
 
-        builder.addTestItems();
-        builder.populatePane(glSettingsContainer);
+        glSettings.addNode(new SettingNode("Center", new VectorSettingsItem("Center"), SettingNode.SettingsType.VEC3));
+
+        SettingNode framerateNode = new SettingNode("Framerate", new IntSettingsItem("Framerate"), SettingNode.SettingsType.INT);
+        framerateNode.bindToProperty(modelViewer.getFramerateProperty());
+        glSettings.addNode(framerateNode);
+
+        SettingNode eyeVectorNode = new SettingNode("Eye", new VectorSettingsItem("Eye"), SettingNode.SettingsType.VEC3);
+        eyeVectorNode.bindToProperty(modelViewer.eyeVectorProperty());
+        glSettings.addNode(eyeVectorNode);
+
+
+        SettingsPaneBuilder builder = new SettingsPaneBuilder();
+        builder.populatePane(glSettingsContainer, glSettings);
     }
-
-
 
 }

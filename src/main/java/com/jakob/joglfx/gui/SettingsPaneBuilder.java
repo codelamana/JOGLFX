@@ -2,17 +2,14 @@ package com.jakob.joglfx.gui;
 
 import com.jakob.joglfx.MainWindowController;
 import com.jakob.joglfx.model.SettingNode;
-import com.jakob.joglfx.model.settingscontroller.SettingsController;
-import com.jakob.joglfx.model.settingsitems.IntSettingsItem;
-import com.jakob.joglfx.model.settingsitems.PathSettingsItem;
-import com.jakob.joglfx.model.settingsitems.VectorSettingsItem;
 import com.jakob.joglfx.model.SettingsItem;
+import com.jakob.joglfx.model.settingscontroller.SettingsController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class SettingsPaneBuilder {
 
@@ -22,8 +19,18 @@ public class SettingsPaneBuilder {
 
     public static void populatePane(Pane p, SettingNode root){
         for(SettingNode item : root.getChildren()){
-            Node n = loadNode(item.getSettingsItem());
-            p.getChildren().add(n);
+            if(item.getType() != SettingNode.SettingsType.CONTAINER) {
+                Node n = loadNode(item.getSettingsItem());
+                p.getChildren().add(n);
+            }
+            if(!item.getChildren().isEmpty()){
+                System.out.println("Hier Kinder einfügen");
+
+                HBox subPane = new HBox();
+
+                populatePane(subPane, item);
+                p.getChildren().add(subPane);
+            }
         }
     }
 
@@ -32,8 +39,8 @@ public class SettingsPaneBuilder {
         FXMLLoader loader = new FXMLLoader(MainWindowController.class.getResource(item.getFxml()));
 
         SettingsController c = item.getSettingsController();
-        c.addChangeListener(item.getChangeListener());
 
+        c.addChangeListener(item.getChangeListener());
         c.bindProperty(item.getProperty());
 
         loader.setController(item.getSettingsController());

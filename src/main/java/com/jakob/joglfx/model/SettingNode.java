@@ -79,4 +79,7 @@ public class SettingNode{
         SettingNode.fxml = fxml;
     }
 
+    public SettingsType getType() {
+        return type;
+    }
 }

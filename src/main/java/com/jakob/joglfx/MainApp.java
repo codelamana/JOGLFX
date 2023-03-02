@@ -3,6 +3,7 @@ package com.jakob.joglfx;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -23,7 +24,8 @@ public class MainApp extends Application{
 
         // Load Main Window and setup
         FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("mainwindow-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1400, 1000);
+        Parent p = fxmlLoader.load();
+        Scene scene = new Scene(p, 1400, 1000);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();

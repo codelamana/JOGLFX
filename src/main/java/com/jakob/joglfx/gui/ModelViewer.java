@@ -4,15 +4,11 @@ import com.jakob.joglfx.geometry.BufferManager;
 import com.jakob.joglfx.geometry.primitives.Cube;
 import com.jakob.joglfx.gl.ShaderProgram;
 import com.jakob.joglfx.object.OBJloader;
-import com.jakob.joglfx.object.ObjectModel;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.util.FPSAnimator;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.SimpleDoubleProperty;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -76,13 +72,12 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
     private FloatBuffer modelVertexFloatBuffer;
     private FloatBuffer modelNormalFloatBuffer;
     private FloatBuffer modelColorFloatBuffer;
-    private Vector3f zaxis;
-    private Vector3f xaxis;
-    private Vector3f yaxis;
     private Matrix4f view;
 
-    private SimpleIntegerProperty framerate = new SimpleIntegerProperty(50);
-    private SimpleObjectProperty<Vector3f> eyeProperty = new SimpleObjectProperty<>(eye);
+    private SimpleDoubleProperty framerate = new SimpleDoubleProperty(50);
+    private SimpleDoubleProperty eyeXProperty = new SimpleDoubleProperty();
+    private SimpleDoubleProperty eyeYProperty = new SimpleDoubleProperty();
+    private SimpleDoubleProperty eyeZProperty = new SimpleDoubleProperty();
 
 
     /**
@@ -95,7 +90,10 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
         this.addGLEventListener(this);
         this.animator = new FPSAnimator(this, 35);
         this.framerate.addListener((observableValue, number, t1) -> setFramerate(t1.intValue()));
-        this.eyeProperty.addListener((observableValue, vector3f, t1) -> setEyeCoordinates(t1));
+
+        this.eyeXProperty.addListener((observableValue, number, t1) -> setEyeX(t1.floatValue()));
+        this.eyeYProperty.addListener((observableValue, number, t1) -> setEyeY(t1.floatValue()));
+        this.eyeZProperty.addListener((observableValue, number, t1) -> setEyeZ(t1.floatValue()));
     }
 
     /**
@@ -141,7 +139,6 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
 
 
         mMat.identity();
-
         aspect = (float) width / (float) height;
         view = new Matrix4f().perspective((float) Math.toRadians(60.0f), aspect, 0.1f, 1000.0f);
 
@@ -163,18 +160,20 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
         gl.glUseProgram(programID);
 
         mvpLoc = gl.glGetUniformLocation(this.programID, "mvp");
-        // Model matrix
 
-        mvpMat.identity();
-        //mMat.rotate((float)(Math.PI/100), 0, 1, 0);
+        mMat.identity();
+        mMat.rotate((float) (Math.PI * k/ 100), 0,1,0);
+        k++;
+
+        aspect = (float) width / (float) height;
+        view = new Matrix4f().perspective((float) Math.toRadians(60.0f), aspect, 0.1f, 1000.0f);
+
         Matrix4f fl = new Matrix4f();
-        eye = new Vector3f((float) (5* Math.cos(Math.PI * k/100)), 5f, (float) (5* Math.sin(Math.PI * k/100)));
         view.lookAt(eye, center, up, fl);
 
+        mvpMat.identity();
         mvpMat.mul(fl);
-        //mvpMat.mul(vMat);
         mvpMat.mul(mMat);
-        k++;
 
 
         gl.glUniformMatrix4fv(mvpLoc, 1, false, mvpMat.get(mvpBuffer));
@@ -227,19 +226,35 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
         }
     }
 
-    public SimpleIntegerProperty getFramerateProperty(){
+    public SimpleDoubleProperty getFramerateProperty(){
         return this.framerate;
     }
 
-    public void setEyeCoordinates(Vector3f newEye){
-        this.eye = newEye;
-        System.out.println("New coords are " + this.eye);
+
+    public void setEyeX(float newX){
+        this.eye.x = newX;
+        System.out.println("New Eye Value is " + this.eye.x());
     }
 
-    public SimpleObjectProperty<Vector3f> eyeVectorProperty() {
-        return eyeProperty;
+    public void setEyeY(float newY){
+        this.eye.y = newY;
+        System.out.println("New Eye Value is " + this.eye.y());
     }
 
+    public void setEyeZ(float newZ){
+        this.eye.z = newZ;
+        System.out.println("New Eye Value is " + this.eye.z());
+    }
+
+    public SimpleDoubleProperty getEyeXProperty(){
+        return this.eyeXProperty;
+    }
+    public SimpleDoubleProperty getEyeYProperty(){
+        return this.eyeYProperty;
+    }
+    public SimpleDoubleProperty getEyeZProperty(){
+        return this.eyeZProperty;
+    }
 
     /**
      * Init function for GL, this is called in the beginning to setup everything gl related

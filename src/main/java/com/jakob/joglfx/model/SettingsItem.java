@@ -1,18 +1,16 @@
 package com.jakob.joglfx.model;
 
 
-import com.jakob.joglfx.model.settingscontroller.IntSettingController;
-import com.jakob.joglfx.model.settingscontroller.PathSettingController;
 import com.jakob.joglfx.model.settingscontroller.SettingsController;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.fxml.Initializable;
 
 
-public abstract class SettingsItem<T>{
+public abstract class SettingsItem<T> {
 
    protected SettingsController<T> settingsController;
+
    protected ChangeListener<T> changeListener;
    protected SimpleObjectProperty<T> property;
 
@@ -26,9 +24,7 @@ public abstract class SettingsItem<T>{
 
     public abstract ChangeListener<T> getChangeListener();
 
-
     public abstract SimpleObjectProperty<T> getProperty();
-
 
     public SettingsController<T> getSettingsController() {
         return settingsController;
@@ -37,4 +33,5 @@ public abstract class SettingsItem<T>{
     public String getFxml() {
         return fxml;
     }
+
 }

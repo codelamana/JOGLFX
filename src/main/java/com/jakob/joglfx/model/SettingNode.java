@@ -1,9 +1,9 @@
 package com.jakob.joglfx.model;
 
+import com.jakob.joglfx.model.settingsitems.SettingsItem;
 import javafx.beans.property.Property;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SettingNode{
 
@@ -82,4 +82,6 @@ public class SettingNode{
     public SettingsType getType() {
         return type;
     }
+
+
 }

@@ -4,6 +4,7 @@ package com.jakob.joglfx.object;
 
 import com.jakob.joglfx.geometry.base.Face;
 import com.jakob.joglfx.geometry.base.Vertex;
+import com.jakob.joglfx.geometry.primitives.ObjectModel;
 import org.joml.Vector3f;
 
 import java.io.BufferedReader;

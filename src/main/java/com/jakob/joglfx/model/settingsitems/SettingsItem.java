@@ -1,34 +1,37 @@
-package com.jakob.joglfx.model;
+package com.jakob.joglfx.model.settingsitems;
 
-
-import com.jakob.joglfx.model.settingscontroller.SettingsController;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.HBox;
 
 
 public abstract class SettingsItem<T> {
 
-   protected SettingsController<T> settingsController;
 
    protected ChangeListener<T> changeListener;
    protected SimpleObjectProperty<T> property;
 
-   String title;
+   String titleString;
+
    protected String fxml;
+
+   @FXML
+   public HBox content;
+
 
 
     public SettingsItem(String title) {
-        this.title = title;
+        this.titleString = title;
     }
 
     public abstract ChangeListener<T> getChangeListener();
 
     public abstract SimpleObjectProperty<T> getProperty();
 
-    public SettingsController<T> getSettingsController() {
-        return settingsController;
-    }
 
     public String getFxml() {
         return fxml;

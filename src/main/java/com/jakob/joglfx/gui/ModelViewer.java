@@ -15,6 +15,7 @@ import org.joml.Vector3f;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
 public class ModelViewer extends GLJPanel implements GLEventListener, KeyListener {
@@ -25,55 +26,46 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
      * All Viewing related stuff is accessed over this class
      */
 
+    // Frame Animator and frame counter
     private FPSAnimator animator;
+    private long k = 0;
 
+    // Program pointer
     private int programID;
 
-    //ObjectModel model;
-
+    // VAO and VBO buffer pointers
     private int[] vaos = new int[1];
     private int[] vbos = new int[3];
 
-    int vertLoc = 0;
+
+    private int vertLoc = 0;
     private int colorLoc = 0;
 
-    float points[] = {
-            0, 0, 0,
-            1.0f, 0.0f,  0.0f,
-            0.0f, 1.0f,  0.0f
-    };
+    // Model View Projection GL matrix pointer
+    private int mvpLoc;
 
-    float colors[] = {
-            0.0f,  1f,  0.0f,
-            1f, 0f,  0.0f,
-            0f, 0f,  1.0f
-    };
-
-    FloatBuffer b = Buffers.newDirectFloatBuffer(points);
-    FloatBuffer c = Buffers.newDirectFloatBuffer(colors);
-
+    // buffer for mvp
     private FloatBuffer mvpBuffer = Buffers.newDirectFloatBuffer(16);
+
     private Vector3f modelPosition;
-    private Matrix4f pMat = new Matrix4f(); // projection matrix
-    private Matrix4f vMat = new Matrix4f(); // view matrix
     private Matrix4f mMat = new Matrix4f(); // model matrix
     private Matrix4f mvpMat = new Matrix4f(); // model-view-projection matrix
-    private int mvpLoc;
     private float aspect;
 
+    // Look-at variables
     private Vector3f eye = new Vector3f(5,1,5);
     private Vector3f center = new Vector3f(0,0,0);
     private Vector3f up = new Vector3f(0,1,0);
 
-    
 
-    private long k = 0;
+    // buffer Manager and buffers for loading into GL
     private BufferManager bufferManager;
     private FloatBuffer modelVertexFloatBuffer;
     private FloatBuffer modelNormalFloatBuffer;
     private FloatBuffer modelColorFloatBuffer;
     private Matrix4f view;
 
+    // properties for changing variables from outside the class
     private SimpleDoubleProperty framerate = new SimpleDoubleProperty(50);
     private SimpleDoubleProperty eyeXProperty = new SimpleDoubleProperty();
     private SimpleDoubleProperty eyeYProperty = new SimpleDoubleProperty();
@@ -81,7 +73,7 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
 
 
     /**
-     * Initialize ModelViewer Object, set GL context, add GLUT and Animator to Frame
+     * Initialize ModelViewer Object, set GL context, add Animator to Frame
      * @param userCapsRequest
      * @throws GLException
      */
@@ -89,8 +81,9 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
         super(userCapsRequest);
         this.addGLEventListener(this);
         this.animator = new FPSAnimator(this, 35);
-        this.framerate.addListener((observableValue, number, t1) -> setFramerate(t1.intValue()));
 
+        // add ChangeListeners to all properties
+        this.framerate.addListener((observableValue, number, t1) -> setFramerate(t1.intValue()));
         this.eyeXProperty.addListener((observableValue, number, t1) -> setEyeX(t1.floatValue()));
         this.eyeYProperty.addListener((observableValue, number, t1) -> setEyeY(t1.floatValue()));
         this.eyeZProperty.addListener((observableValue, number, t1) -> setEyeZ(t1.floatValue()));
@@ -104,17 +97,16 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
      */
     protected void setup(GL4 gl, int x, int y, int width, int height) {
 
-        bufferManager = new BufferManager();
-        //bufferManager.addObject(new Cube(1,1,1, 0.5,0.5,0.5));
-        bufferManager.addObject(new Cube(0,0,0, 1,1,1));
-        OBJloader loader = new OBJloader("teapot.obj");
+        // setup objects in Buffer Manager
+        //OBJloader loader = new OBJloader("teapot.obj");
         //bufferManager.addObject(loader.load());
 
+        // load Data into Buffers
         this.modelVertexFloatBuffer = bufferManager.getBufferedVertexData();
         this.modelNormalFloatBuffer = bufferManager.getBufferedNormalData();
         this.modelColorFloatBuffer = bufferManager.getBufferedColorData();
 
-
+        // Generate Buffers for Vertex, Normal and Color Data
         gl.glGenBuffers(3, vbos, 0);
 
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbos[0]);
@@ -123,6 +115,7 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbos[1]);
         gl.glBufferData(gl.GL_ARRAY_BUFFER, this.modelColorFloatBuffer.capacity()*4L, this.modelColorFloatBuffer, GL.GL_STATIC_DRAW);
 
+        // Generate one VAO for the three VBOs
         gl.glGenVertexArrays(1, vaos, 0);
         gl.glBindVertexArray(vaos[0]);
         gl.glEnableVertexAttribArray(this.vaos[0]);
@@ -133,11 +126,11 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
         gl.glVertexAttribPointer(this.colorLoc, 3, GL.GL_FLOAT, false, 0, 0);
 
 
-
+        // get locations for passing data to GLSL shaders
         this.vertLoc = gl.glGetAttribLocation(this.programID, "a_vert");
         this.colorLoc = gl.glGetAttribLocation(this.programID, "a_color");
 
-
+        // Setup MVP Matrix
         mMat.identity();
         aspect = (float) width / (float) height;
         view = new Matrix4f().perspective((float) Math.toRadians(60.0f), aspect, 0.1f, 1000.0f);
@@ -159,12 +152,15 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
 
         gl.glUseProgram(programID);
 
+        // load location for passing mvp to GLSL Vertex Shader
         mvpLoc = gl.glGetUniformLocation(this.programID, "mvp");
 
+        // Rotate Object
         mMat.identity();
         mMat.rotate((float) (Math.PI * k/ 100), 0,1,0);
         k++;
 
+        //calculate View-Perspective Part
         aspect = (float) width / (float) height;
         view = new Matrix4f().perspective((float) Math.toRadians(60.0f), aspect, 0.1f, 1000.0f);
 
@@ -254,6 +250,10 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
     }
     public SimpleDoubleProperty getEyeZProperty(){
         return this.eyeZProperty;
+    }
+
+    public void setBufferManager(BufferManager bufferManager){
+        this.bufferManager = bufferManager;
     }
 
     /**

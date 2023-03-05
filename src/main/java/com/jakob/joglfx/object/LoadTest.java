@@ -1,5 +1,7 @@
 package com.jakob.joglfx.object;
 
+import com.jakob.joglfx.geometry.primitives.ObjectModel;
+
 public class LoadTest {
 
     public static void main(String[] args) {

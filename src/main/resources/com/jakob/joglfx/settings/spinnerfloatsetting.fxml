@@ -1,37 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
-  <columnConstraints>
-    <ColumnConstraints hgrow="NEVER" minWidth="15.0" />
-    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-      <RowConstraints vgrow="NEVER" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-      <RowConstraints vgrow="NEVER" />
-  </rowConstraints>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Spinner fx:id="spinner" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS" />
-      <Label text="x" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-      <Label fx:id="title" text="sjdhfksjdhfsdfjhs" GridPane.columnSpan="2147483647">
-         <padding>
-            <Insets left="5.0" />
-         </padding>
-      </Label>
-      <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
-         <padding>
-            <Insets bottom="1.0" top="1.0" />
-         </padding>
-      </Separator>
-      <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3">
-         <padding>
-            <Insets bottom="1.0" top="1.0" />
-         </padding>
-      </Separator>
+      <GridPane maxHeight="-Infinity" maxWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="NEVER" minWidth="15.0" />
+          <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints vgrow="NEVER" />
+        </rowConstraints>
+         <children>
+            <Spinner fx:id="spinner" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" />
+            <Label fx:id="title" text="x" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" />
+         </children>
+      </GridPane>
    </children>
-</GridPane>
+</AnchorPane>

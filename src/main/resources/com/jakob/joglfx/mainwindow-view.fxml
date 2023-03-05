@@ -37,25 +37,12 @@
          <items>
             <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
               <items>
-                  <ScrollPane prefHeight="200.0" prefWidth="200.0">
-                     <content>
-                        <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
-                           <children>
-                              <TreeTableView prefHeight="412.0" prefWidth="286.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                <columns>
-                                  <TreeTableColumn prefWidth="75.0" text="C1" />
-                                  <TreeTableColumn prefWidth="75.0" text="C2" />
-                                </columns>
-                              </TreeTableView>
-                           </children>
-                        </AnchorPane>
-                     </content>
-                  </ScrollPane>
-                  <ScrollPane prefHeight="200.0" prefWidth="200.0">
+                  <TreeTableView fx:id="objectTreeTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                  <TitledPane animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="untitled">
                     <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="252.0" prefWidth="296.0" />
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                     </content>
-                  </ScrollPane>
+                  </TitledPane>
               </items>
             </SplitPane>
             <AnchorPane>

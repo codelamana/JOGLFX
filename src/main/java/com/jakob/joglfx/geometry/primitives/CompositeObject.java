@@ -1,11 +1,13 @@
-package com.jakob.joglfx.geometry;
+package com.jakob.joglfx.geometry.primitives;
+
+import com.jakob.joglfx.geometry.GeometryObject;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
-public class BufferManager {
-
-    ArrayList<GeometryObject> objects = new ArrayList<>();
+public class CompositeObject extends GeometryObject {
 
     float[] vertexData;
     FloatBuffer bufferedVertexData;
@@ -18,8 +20,14 @@ public class BufferManager {
 
     int numberOfFaces = 0;
 
-    public BufferManager() {
+    public CompositeObject() {
+        this.name = new SimpleStringProperty("defaultValue");
+        this.numberOfVertices = new SimpleIntegerProperty(0);
+    }
 
+    public CompositeObject(String name) {
+        this.name = new SimpleStringProperty(name);
+        this.numberOfVertices = new SimpleIntegerProperty(0);
     }
 
     public void addObject(GeometryObject geometryObject){
@@ -66,20 +74,4 @@ public class BufferManager {
         return bufferedColorData;
     }
 
-    public ArrayList<GeometryObject> getObjects() {
-        return objects;
-    }
-
-    public static void printFloatBuffer(FloatBuffer buf){
-
-            buf.rewind();
-            System.err.print(buf.toString() + ": ");
-            for (int i = 0; i < buf.remaining(); i++) {
-                System.err.print(buf.get(i) + " ");
-                if((i+1) % 3 == 0) System.err.println("");
-            }
-            System.err.println(" ");
-            buf.rewind();
-
-    }
 }

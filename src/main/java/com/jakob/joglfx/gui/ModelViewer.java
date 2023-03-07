@@ -1,6 +1,7 @@
 package com.jakob.joglfx.gui;
 
 import com.jakob.joglfx.geometry.BufferManager;
+import com.jakob.joglfx.geometry.GeometryObject;
 import com.jakob.joglfx.geometry.primitives.Cube;
 import com.jakob.joglfx.gl.ShaderProgram;
 import com.jakob.joglfx.object.OBJloader;
@@ -110,10 +111,10 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
         gl.glGenBuffers(3, vbos, 0);
 
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbos[0]);
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, this.modelVertexFloatBuffer.capacity()* 4L, this.modelVertexFloatBuffer, GL.GL_STATIC_DRAW);
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, this.modelVertexFloatBuffer.capacity() * 4L, this.modelVertexFloatBuffer, GL.GL_STATIC_DRAW);
 
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbos[1]);
-        gl.glBufferData(gl.GL_ARRAY_BUFFER, this.modelColorFloatBuffer.capacity()*4L, this.modelColorFloatBuffer, GL.GL_STATIC_DRAW);
+        gl.glBufferData(gl.GL_ARRAY_BUFFER, this.modelColorFloatBuffer.capacity() * 4L, this.modelColorFloatBuffer, GL.GL_STATIC_DRAW);
 
         // Generate one VAO for the three VBOs
         gl.glGenVertexArrays(1, vaos, 0);

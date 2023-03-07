@@ -2,7 +2,6 @@ package com.jakob.joglfx;
 
 import com.jakob.joglfx.geometry.BufferManager;
 import com.jakob.joglfx.geometry.GeometryObject;
-import com.jakob.joglfx.geometry.primitives.CompositeObject;
 import com.jakob.joglfx.geometry.primitives.Cube;
 import com.jakob.joglfx.gui.SettingsPaneBuilder;
 import com.jakob.joglfx.gui.ModelViewer;
@@ -10,6 +9,7 @@ import com.jakob.joglfx.gui.ModelViewer;
 import com.jakob.joglfx.model.SettingNode;
 import com.jakob.joglfx.model.settingsitems.ContainerItem;
 import com.jakob.joglfx.model.settingsitems.FloatSettingsItem;
+import com.jakob.joglfx.object.OBJloader;
 import com.jogamp.opengl.*;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
@@ -19,7 +19,6 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 
 import javafx.embed.swing.SwingNode;
-import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
@@ -68,20 +67,13 @@ public class MainWindowController implements Initializable {
 
         splitPane.setDividerPositions(0.2, 0.85);
 
-        modelViewer = new ModelViewer(capabilities);
-
         bufferManager = new BufferManager();
-        CompositeObject root1 = new CompositeObject("Würfel");
-        root1.addObject(new Cube("W1", 0,0,0, 1,1,1));
-        root1.addObject(new Cube( "W2", 1,1,1, 0.5,0.5,0.5));
 
-        CompositeObject root2 = new CompositeObject("Andere Würfel");
-        root2.addObject(new Cube("dritter Würfel", -1,1,1, 0.25, 0.25, 0.25));
-        root2.addObject(new Cube( "W4", 1,-1,1, 0.5,0.5,0.5));
+        ArrayList<GeometryObject> roots = loadGeometryObjects();
 
-        bufferManager.addObject(root1);
-        bufferManager.addObject(root2);
+        bufferManager.addObjects(roots);
 
+        modelViewer = new ModelViewer(capabilities);
         modelViewer.setBufferManager(bufferManager);
 
         setupObjectTreeTableView(bufferManager);
@@ -112,43 +104,53 @@ public class MainWindowController implements Initializable {
         glSettings.addNode(centerVectorNode);
 
         SettingsPaneBuilder.populatePane(glSettingsContainer, glSettings);
-
         glSettingsContainer.setPadding(new Insets(3));
+
+    }
+
+    private ArrayList<GeometryObject> loadGeometryObjects() {
+
+        GeometryObject root1 = new GeometryObject("Würfel");
+        GeometryObject c1 = new GeometryObject("Container");
+        c1.addChild(new Cube("Another Cube", 2,2,2, 0.25, 0.4, 1), new Cube("W1", 0,0,0, 1,1,1));
+        root1.addChild(c1);
+        root1.addChild(new Cube( "W2", 1,1,1, 0.5,0.5,0.5));
+
+        GeometryObject root2 = new GeometryObject("Andere Würfel");
+        root2.addChild(new Cube("dritter Würfel", -1,1,1, 0.25, 0.25, 0.25));
+        root2.addChild(new Cube( "W4", 1,-1,1, 0.5,0.5,0.5));
+        OBJloader obJloader = new OBJloader("teapot.obj");
+        //root2.addChild(obJloader.load());
+
+        ArrayList<GeometryObject> temp = new ArrayList<>();
+        temp.add(root1);
+        temp.add(root2);
+
+        return temp;
 
     }
 
     public void setupObjectTreeTableView(BufferManager bufferManager){
 
-        objectTreeTable.setShowRoot(false);
+        objectTreeTable.setShowRoot(true);
 
         TreeTableColumn<GeometryObject, String> nameColumn = new TreeTableColumn<>("Name");
-        TreeTableColumn<GeometryObject, Integer> verticesColumn = new TreeTableColumn<>("#Vertices");
+        TreeTableColumn<GeometryObject, Integer> verticesColumn = new TreeTableColumn<>("#Faces");
 
         nameColumn.setMinWidth(100);
         verticesColumn.setMinWidth(50);
-
-        nameColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<GeometryObject, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<GeometryObject, String> p) {
-                return p.getValue().getValue().nameProperty();
-            }
-        });
-        verticesColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<GeometryObject, Integer>, ObservableValue<Integer>>() {
-            @Override
-            public ObservableValue<Integer> call(TreeTableColumn.CellDataFeatures<GeometryObject, Integer> p) {
-                return p.getValue().getValue().numberOfVerticesProperty().asObject();
-            }
-        });
 
         objectTreeTable.getColumns().add(nameColumn);
         objectTreeTable.getColumns().add(verticesColumn);
 
         ArrayList<GeometryObject> objects = bufferManager.getObjects();
 
-        TreeItem<GeometryObject> root = new TreeItem<>(new CompositeObject("Projekt"));
+        GeometryObject rootGeometryObjectNode = new GeometryObject("Projekt");
+        rootGeometryObjectNode.addChild(objects);
+        TreeItem<GeometryObject> root = new TreeItem<>(rootGeometryObjectNode);
 
         for(GeometryObject g: objects){
-            if(!(g instanceof CompositeObject)){
+            if(g.getChildren().size() == 0){
                 TreeItem<GeometryObject> temp = new TreeItem<>(g);
                 root.getChildren().add(temp);
             } else {
@@ -156,14 +158,18 @@ public class MainWindowController implements Initializable {
             }
         }
 
+        nameColumn.setCellValueFactory(p -> p.getValue().getValue().nameProperty());
+        verticesColumn.setCellValueFactory(p -> p.getValue().getValue().numberOfFacesProperty().asObject());
+
         objectTreeTable.setRoot(root);
 
     }
 
     private TreeItem<GeometryObject> populateTreeItem(GeometryObject g){
         TreeItem<GeometryObject> temp = new TreeItem<>(g);
-        if(g instanceof CompositeObject){
-            for(GeometryObject p : g.getObjects()){
+
+        if(g.getChildren().size() != 0){
+            for(GeometryObject p : g.getChildren()){
                 temp.getChildren().add(populateTreeItem(p));
             }
         }

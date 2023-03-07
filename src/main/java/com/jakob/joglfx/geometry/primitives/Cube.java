@@ -57,7 +57,7 @@ public class Cube extends GeometryObject {
     };
 
     public Cube(double x, double y, double z, double width, double height, double depth) {
-        this.name = new SimpleStringProperty("defaultValue");
+        super(null);
         this.numberOfVertices = new SimpleIntegerProperty(0);
         this.x = x;
         this.y = y;
@@ -70,7 +70,7 @@ public class Cube extends GeometryObject {
     }
 
     public Cube(String name, double x, double y, double z, double width, double height, double depth) {
-        this.name = new SimpleStringProperty(name);
+        super(name);
         this.numberOfVertices = new SimpleIntegerProperty(0);
         this.x = x;
         this.y = y;
@@ -84,12 +84,12 @@ public class Cube extends GeometryObject {
 
     private void generateVertices(){
 
-        this.faces = new ArrayList<>();
-        this.vertices = new ArrayList<>();
-
         for (int i = 0; i < cube_raw_vertices.length ; i+=3) {
+
             Vertex t = new Vertex((float)(width * cube_raw_vertices[i]  + x),(float)(height*cube_raw_vertices[i+1] +y),(float)(depth*cube_raw_vertices[i+2] + z));
+
             t.color = new Vector3f(0.3f * cube_raw_vertices[i] + 0.5f, 0.3f * cube_raw_vertices[i+1] + 0.5f, 0.3f * cube_raw_vertices[i+2] + 0.5f);
+
             this.vertices.add(t);
 
         }
@@ -100,20 +100,13 @@ public class Cube extends GeometryObject {
                     this.vertices.get(i+2)).returnWithFaceNormals());
         }
 
+        this.numberOfFaces.set(faces.size());
+
         System.out.println(this.vertices.size());
         System.out.println(this.faces.size());
 
-        vertexData = new float[this.faces.size() * 3 * 3];
-        normalData = new float[this.faces.size() * 3 * 3];
-        colorData = new float[this.faces.size() * 3 * 3];
-
     }
 
-
-    @Override
-    public int numberOfFaces() {
-        return faces.size();
-    }
 
 
 }

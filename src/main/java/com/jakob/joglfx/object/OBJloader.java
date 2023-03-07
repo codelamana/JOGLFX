@@ -102,7 +102,6 @@ public class OBJloader {
             e.printStackTrace();
         }
 
-
         return model;
     }
 }

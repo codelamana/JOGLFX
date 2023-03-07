@@ -8,10 +8,12 @@ import javafx.beans.property.SimpleStringProperty;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
-public abstract class GeometryObject {
+public class GeometryObject {
 
-    protected ArrayList<GeometryObject> objects = new ArrayList<>();
+    protected ArrayList<GeometryObject> children = new ArrayList<>();
 
     protected float[] vertexData;
     protected FloatBuffer bufferedVertexData;
@@ -25,10 +27,33 @@ public abstract class GeometryObject {
     protected ArrayList<Face> faces;
     protected ArrayList<Vertex> vertices;
 
+    protected SimpleIntegerProperty numberOfFaces;
+
     protected SimpleStringProperty name;
     protected SimpleIntegerProperty numberOfVertices;
 
+    public GeometryObject(String newName) {
+        this.name = new SimpleStringProperty(Objects.requireNonNullElse(newName, "Default Name"));
+        this.numberOfVertices = new SimpleIntegerProperty(0);
+        this.numberOfFaces = new SimpleIntegerProperty(0);
+        this.vertexData = new float[0];
+        this.normalData = new float[0];
+        this.colorData = new float[0];
+        this.faces = new ArrayList<>();
+        this.vertices = new ArrayList<>();
+    }
 
+    public void addChild(GeometryObject... newObjects){
+        this.children.addAll(Arrays.asList(newObjects));
+        int numberOfChildFaces = this.children.stream().mapToInt(GeometryObject::numberOfFaces).sum();
+        this.numberOfFaces.setValue(numberOfChildFaces + this.faces.size());
+    }
+
+    public void addChild(ArrayList<GeometryObject> newObjects){
+        this.children.addAll(newObjects);
+        int numberOfChildFaces = this.children.stream().mapToInt(GeometryObject::numberOfFaces).sum();
+        this.numberOfFaces.setValue(numberOfChildFaces + this.faces.size());
+    }
 
     public FloatBuffer getBufferedVertexData() {
         vertexData = new float[this.faces.size() * 3 * 3];
@@ -43,7 +68,15 @@ public abstract class GeometryObject {
             }
         }
 
-        bufferedVertexData = Buffers.newDirectFloatBuffer(vertexData);
+        bufferedVertexData = FloatBuffer.allocate(this.numberOfFaces.get() * 9);
+        System.out.println(this.numberOfFaces);
+        
+        bufferedVertexData.put(vertexData);
+        for(GeometryObject g: this.children) {
+            bufferedVertexData.put(g.getBufferedVertexData());
+        }
+        
+        bufferedVertexData.rewind();
         return bufferedVertexData;
     }
 
@@ -66,7 +99,14 @@ public abstract class GeometryObject {
             }
         }
 
-        bufferedNormalData = Buffers.newDirectFloatBuffer(normalData);
+        bufferedNormalData = FloatBuffer.allocate(this.numberOfFaces.get() * 9);
+
+        bufferedNormalData.put(normalData);
+        for(GeometryObject g: this.children) {
+            bufferedNormalData.put(g.getBufferedNormalData());
+        }
+
+        bufferedNormalData.rewind();
         return bufferedNormalData;
     }
 
@@ -79,20 +119,31 @@ public abstract class GeometryObject {
         int i = 0;
         for(Face f :this.faces) {
             for (Vertex v : f.vertices) {
-                colorData[i] = 1.0f;
-                colorData[i+1] = 0.5f;
-                colorData[i+2] = 0.25f;
+                colorData[i] = v.color.x;
+                colorData[i+1] = v.color.y;
+                colorData[i+2] = v.color.z;
                 i+=3;
             }
         }
 
-        bufferedColorData = Buffers.newDirectFloatBuffer(colorData);
+        bufferedColorData = FloatBuffer.allocate(this.numberOfFaces.get() * 9);
+
+        bufferedColorData.put(colorData);
+        for(GeometryObject g: this.children) {
+            bufferedColorData.put(g.getBufferedColorData());
+        }
+
+        bufferedColorData.rewind();
         return bufferedColorData;
     }
 
-    public abstract int numberOfFaces();
+    public int numberOfFaces(){
+        return this.numberOfFaces.get();
+    }
 
-
+    public SimpleIntegerProperty numberOfFacesProperty(){
+        return this.numberOfFaces;
+    }
 
     public SimpleIntegerProperty numberOfVerticesProperty(){
         return numberOfVertices;
@@ -110,11 +161,11 @@ public abstract class GeometryObject {
         this.name.setValue(name);
     }
 
-    public ArrayList<GeometryObject> getObjects() {
-        return objects;
+    public ArrayList<GeometryObject> getChildren() {
+        return children;
     }
 
-    protected void printFloatArray(float[] array){
+    public static void printFloatArray(float[] array){
         int i = 0;
         for(float f : array){
             System.out.print(f);

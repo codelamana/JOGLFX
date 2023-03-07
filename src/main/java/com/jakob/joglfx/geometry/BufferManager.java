@@ -1,5 +1,6 @@
 package com.jakob.joglfx.geometry;
 
+import java.lang.reflect.Array;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -27,6 +28,11 @@ public class BufferManager {
         this.numberOfFaces += geometryObject.numberOfFaces();
     }
 
+    public void addObjects(ArrayList<GeometryObject> newObjects){
+        this.objects.addAll(newObjects);
+        this.numberOfFaces += newObjects.stream().mapToInt(GeometryObject::numberOfFaces).sum();
+    }
+
 
     public int numberOfFaces() {
         int sum = 0;
@@ -38,8 +44,8 @@ public class BufferManager {
     }
 
     public FloatBuffer getBufferedVertexData() {
-        bufferedVertexData = FloatBuffer.allocate(this.numberOfFaces * 9);
-        System.out.println(this.numberOfFaces*9);
+        bufferedVertexData = FloatBuffer.allocate(this.numberOfFaces() * 9);
+        System.out.println(this.numberOfFaces() * 9);
         for(GeometryObject g: this.objects) {
             bufferedVertexData.put(g.getBufferedVertexData());
         }
@@ -49,7 +55,7 @@ public class BufferManager {
     }
 
     public FloatBuffer getBufferedNormalData() {
-        bufferedNormalData = FloatBuffer.allocate(this.numberOfFaces * 9);
+        bufferedNormalData = FloatBuffer.allocate(this.numberOfFaces() * 9);
         for(GeometryObject g: this.objects) {
             bufferedNormalData.put(g.getBufferedNormalData());
         }
@@ -58,7 +64,7 @@ public class BufferManager {
     }
 
     public FloatBuffer getBufferedColorData() {
-        bufferedColorData = FloatBuffer.allocate(this.numberOfFaces * 9);
+        bufferedColorData = FloatBuffer.allocate(this.numberOfFaces() * 9);
         for(GeometryObject g: this.objects) {
             bufferedColorData.put(g.getBufferedColorData());
         }

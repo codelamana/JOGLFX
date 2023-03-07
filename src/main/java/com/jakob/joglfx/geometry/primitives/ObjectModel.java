@@ -15,19 +15,20 @@ public class ObjectModel extends GeometryObject {
 
 
     public ObjectModel() {
-        this.name = new SimpleStringProperty("defaultValue");
+        super(null);
         this.numberOfVertices = new SimpleIntegerProperty(0);
         this.faces = new ArrayList<>();
     }
 
     public ObjectModel(String name) {
-        this.name = new SimpleStringProperty(name);
+        super(name);
         this.numberOfVertices = new SimpleIntegerProperty(0);
         this.faces = new ArrayList<>();
     }
 
     public void addFace(Face f){
         this.faces.add(f);
+        this.numberOfFaces.set(this.faces.size());
     }
 
     /**
@@ -37,18 +38,10 @@ public class ObjectModel extends GeometryObject {
      */
 
 
-    public void printFloatArray(float[] array){
-        int i = 0;
-        for(float f : array){
-            System.out.print(f);
-            i++;
-            if(i%3 == 0) System.out.println("");
-        }
-    }
+
 
     public int numberOfFaces(){
         return faces.size();
     }
-
 
 }

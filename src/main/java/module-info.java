@@ -1,4 +1,4 @@
-module com.example.joglfx {
+module com.jakob.joglfx {
     requires javafx.controls;
     requires javafx.fxml;
 

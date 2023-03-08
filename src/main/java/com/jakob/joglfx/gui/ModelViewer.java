@@ -28,15 +28,15 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
      */
 
     // Frame Animator and frame counter
-    private FPSAnimator animator;
+    private final FPSAnimator animator;
     private long k = 0;
 
     // Program pointer
     private int programID;
 
     // VAO and VBO buffer pointers
-    private int[] vaos = new int[1];
-    private int[] vbos = new int[3];
+    private final int[] vaos = new int[1];
+    private final int[] vbos = new int[3];
 
 
     private int vertLoc = 0;
@@ -46,17 +46,15 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
     private int mvpLoc;
 
     // buffer for mvp
-    private FloatBuffer mvpBuffer = Buffers.newDirectFloatBuffer(16);
+    private final FloatBuffer mvpBuffer = Buffers.newDirectFloatBuffer(16);
 
-    private Vector3f modelPosition;
-    private Matrix4f mMat = new Matrix4f(); // model matrix
     private Matrix4f mvpMat = new Matrix4f(); // model-view-projection matrix
     private float aspect;
 
     // Look-at variables
-    private SimpleObjectProperty<Vector3f> eye;
-    private SimpleObjectProperty<Vector3f> center;
-    private SimpleObjectProperty<Vector3f> up ;
+    private final SimpleObjectProperty<Vector3f> eye;
+    private final SimpleObjectProperty<Vector3f> center;
+    private final SimpleObjectProperty<Vector3f> up ;
 
     SceneModel sceneModel;
     HashSet<GeometryObject> objectsToDraw;
@@ -66,10 +64,7 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
     private Matrix4f view;
 
     // properties for changing variables from outside the class
-    private SimpleDoubleProperty framerate = new SimpleDoubleProperty(50);
-    private SimpleDoubleProperty eyeXProperty = new SimpleDoubleProperty();
-    private SimpleDoubleProperty eyeYProperty = new SimpleDoubleProperty();
-    private SimpleDoubleProperty eyeZProperty = new SimpleDoubleProperty();
+    private final SimpleDoubleProperty framerate = new SimpleDoubleProperty(50);
 
 
     /**

@@ -17,7 +17,7 @@ public class Cube extends GeometryObject {
     double x, y, z;
     double width, height, depth;
 
-    float cube_raw_vertices[] = {
+    float[] cube_raw_vertices = {
             -1.0f,-1.0f,-1.0f, // triangle 1 : begin
             -1.0f,-1.0f, 1.0f,
             -1.0f, 1.0f, 1.0f, // triangle 1 : end

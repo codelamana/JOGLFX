@@ -6,6 +6,7 @@ import com.jogamp.opengl.GL4;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class VertexShader extends Shader {
@@ -34,7 +35,7 @@ public class VertexShader extends Shader {
         String shaderCode;
         try (InputStream in = new FileInputStream(vertexShader)) {
 
-            shaderCode = new Scanner(in, "UTF-8").useDelimiter("\\A").next();
+            shaderCode = new Scanner(in, StandardCharsets.UTF_8).useDelimiter("\\A").next();
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);

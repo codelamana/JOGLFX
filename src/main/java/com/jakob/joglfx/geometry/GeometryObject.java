@@ -179,7 +179,7 @@ public class GeometryObject {
         for(float f : array){
             System.out.print(f);
             i++;
-            if(i%3 == 0) System.out.println("");
+            if(i%3 == 0) System.out.println();
         }
     }
 

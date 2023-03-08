@@ -59,9 +59,7 @@ public class Cube extends GeometryObject {
     public Cube(double x, double y, double z, double width, double height, double depth) {
         super(null);
         this.numberOfVertices = new SimpleIntegerProperty(0);
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.worldSpacePosition = new Vector3f((float) x, (float) y, (float) z);
         this.width = width;
         this.height = height;
         this.depth = depth;
@@ -72,9 +70,7 @@ public class Cube extends GeometryObject {
     public Cube(String name, double x, double y, double z, double width, double height, double depth) {
         super(name);
         this.numberOfVertices = new SimpleIntegerProperty(0);
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.worldSpacePosition = new Vector3f((float) x, (float) y, (float) z);
         this.width = width;
         this.height = height;
         this.depth = depth;
@@ -86,7 +82,7 @@ public class Cube extends GeometryObject {
 
         for (int i = 0; i < cube_raw_vertices.length ; i+=3) {
 
-            Vertex t = new Vertex((float)(width * cube_raw_vertices[i]  + x),(float)(height*cube_raw_vertices[i+1] +y),(float)(depth*cube_raw_vertices[i+2] + z));
+            Vertex t = new Vertex((float)(width * cube_raw_vertices[i]),(float)(height*cube_raw_vertices[i+1]),(float)(depth*cube_raw_vertices[i+2]));
 
             t.color = new Vector3f(0.3f * cube_raw_vertices[i] + 0.5f, 0.3f * cube_raw_vertices[i+1] + 0.5f, 0.3f * cube_raw_vertices[i+2] + 0.5f);
 
@@ -102,8 +98,6 @@ public class Cube extends GeometryObject {
 
         this.numberOfFaces.set(faces.size());
 
-        System.out.println(this.vertices.size());
-        System.out.println(this.faces.size());
 
     }
 

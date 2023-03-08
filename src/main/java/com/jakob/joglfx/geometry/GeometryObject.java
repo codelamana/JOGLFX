@@ -5,6 +5,9 @@ import com.jakob.joglfx.geometry.base.Vertex;
 import com.jogamp.common.nio.Buffers;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -28,9 +31,12 @@ public class GeometryObject {
     protected ArrayList<Vertex> vertices;
 
     protected SimpleIntegerProperty numberOfFaces;
-
     protected SimpleStringProperty name;
     protected SimpleIntegerProperty numberOfVertices;
+
+    protected Matrix4f modelMatrix;
+    protected Vector3f worldSpacePosition;
+    protected Quaternionf rotation;
 
     public GeometryObject(String newName) {
         this.name = new SimpleStringProperty(Objects.requireNonNullElse(newName, "Default Name"));
@@ -41,6 +47,10 @@ public class GeometryObject {
         this.colorData = new float[0];
         this.faces = new ArrayList<>();
         this.vertices = new ArrayList<>();
+
+        this.modelMatrix = new Matrix4f().identity();
+        worldSpacePosition = new Vector3f();
+        rotation = new Quaternionf();
     }
 
     public void addChild(GeometryObject... newObjects){
@@ -69,7 +79,6 @@ public class GeometryObject {
         }
 
         bufferedVertexData = FloatBuffer.allocate(this.numberOfFaces.get() * 9);
-        System.out.println(this.numberOfFaces);
         
         bufferedVertexData.put(vertexData);
         for(GeometryObject g: this.children) {
@@ -172,6 +181,19 @@ public class GeometryObject {
             i++;
             if(i%3 == 0) System.out.println("");
         }
+    }
+
+    public ArrayList<Face> getFaces() {
+        return faces;
+    }
+
+    public Matrix4f getModelMatrix() {
+        Matrix4f temp = new Matrix4f(modelMatrix);
+        return temp.translate(this.worldSpacePosition).rotate(this.rotation);
+    }
+
+    public void setRotation(Quaternionf newRotation){
+        this.rotation = newRotation;
     }
 
 }

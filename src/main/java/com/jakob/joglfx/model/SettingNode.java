@@ -17,7 +17,6 @@ public class SettingNode{
     SettingsItem settingsItem;
 
     ArrayList<SettingNode> children;
-    SettingNode parent;
 
     String title;
     SettingsType type;
@@ -53,14 +52,6 @@ public class SettingNode{
 
     public void setChildren (ArrayList < SettingNode > children) {
         this.children = children;
-    }
-
-    public SettingNode getParent () {
-        return parent;
-    }
-
-    public void setParent (SettingNode parent){
-        this.parent = parent;
     }
 
     public String getTitle () {

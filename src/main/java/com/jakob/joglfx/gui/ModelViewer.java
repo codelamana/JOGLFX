@@ -1,23 +1,23 @@
 package com.jakob.joglfx.gui;
 
-import com.jakob.joglfx.geometry.BufferManager;
 import com.jakob.joglfx.geometry.GeometryObject;
-import com.jakob.joglfx.geometry.primitives.Cube;
 import com.jakob.joglfx.gl.ShaderProgram;
-import com.jakob.joglfx.object.OBJloader;
+import com.jakob.joglfx.model.scene.SceneModel;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.util.FPSAnimator;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.nio.Buffer;
 import java.nio.FloatBuffer;
+import java.util.HashSet;
 
 public class ModelViewer extends GLJPanel implements GLEventListener, KeyListener {
     /**
@@ -54,16 +54,15 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
     private float aspect;
 
     // Look-at variables
-    private Vector3f eye = new Vector3f(5,1,5);
-    private Vector3f center = new Vector3f(0,0,0);
-    private Vector3f up = new Vector3f(0,1,0);
+    private SimpleObjectProperty<Vector3f> eye;
+    private SimpleObjectProperty<Vector3f> center;
+    private SimpleObjectProperty<Vector3f> up ;
+
+    SceneModel sceneModel;
+    HashSet<GeometryObject> objectsToDraw;
 
 
     // buffer Manager and buffers for loading into GL
-    private BufferManager bufferManager;
-    private FloatBuffer modelVertexFloatBuffer;
-    private FloatBuffer modelNormalFloatBuffer;
-    private FloatBuffer modelColorFloatBuffer;
     private Matrix4f view;
 
     // properties for changing variables from outside the class
@@ -78,16 +77,26 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
      * @param userCapsRequest
      * @throws GLException
      */
-    public ModelViewer(GLCapabilitiesImmutable userCapsRequest) throws GLException {
+    public ModelViewer(GLCapabilitiesImmutable userCapsRequest, SceneModel sceneModel) throws GLException {
         super(userCapsRequest);
         this.addGLEventListener(this);
-        this.animator = new FPSAnimator(this, 35);
+        this.animator = new FPSAnimator(this, 5);
+
+        this.sceneModel = sceneModel;
+
+        this.objectsToDraw = sceneModel.getObjects();
+        System.out.println(objectsToDraw);
+
+        this.eye = new SimpleObjectProperty<>(sceneModel.getCamera().getEye());
+        this.center = new SimpleObjectProperty<>(sceneModel.getCamera().getCenter());
+        this.up = new SimpleObjectProperty<>(sceneModel.getCamera().getUp());
+
+        this.eye.bindBidirectional(sceneModel.getCamera().eyeProperty());
+        this.center.bind(sceneModel.getCamera().centerProperty());
+        this.center.bind(sceneModel.getCamera().upProperty());
 
         // add ChangeListeners to all properties
         this.framerate.addListener((observableValue, number, t1) -> setFramerate(t1.intValue()));
-        this.eyeXProperty.addListener((observableValue, number, t1) -> setEyeX(t1.floatValue()));
-        this.eyeYProperty.addListener((observableValue, number, t1) -> setEyeY(t1.floatValue()));
-        this.eyeZProperty.addListener((observableValue, number, t1) -> setEyeZ(t1.floatValue()));
     }
 
     /**
@@ -103,26 +112,25 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
         //bufferManager.addObject(loader.load());
 
         // load Data into Buffers
-        this.modelVertexFloatBuffer = bufferManager.getBufferedVertexData();
-        this.modelNormalFloatBuffer = bufferManager.getBufferedNormalData();
-        this.modelColorFloatBuffer = bufferManager.getBufferedColorData();
 
         // Generate Buffers for Vertex, Normal and Color Data
         gl.glGenBuffers(3, vbos, 0);
 
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbos[0]);
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, this.modelVertexFloatBuffer.capacity() * 4L, this.modelVertexFloatBuffer, GL.GL_STATIC_DRAW);
+        //gl.glBufferData(GL.GL_ARRAY_BUFFER, this.modelVertexFloatBuffer.capacity() * 4L, this.modelVertexFloatBuffer, GL.GL_STATIC_DRAW);
 
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbos[1]);
-        gl.glBufferData(gl.GL_ARRAY_BUFFER, this.modelColorFloatBuffer.capacity() * 4L, this.modelColorFloatBuffer, GL.GL_STATIC_DRAW);
+        //gl.glBufferData(gl.GL_ARRAY_BUFFER, this.modelColorFloatBuffer.capacity() * 4L, this.modelColorFloatBuffer, GL.GL_STATIC_DRAW);
 
         // Generate one VAO for the three VBOs
         gl.glGenVertexArrays(1, vaos, 0);
+
         gl.glBindVertexArray(vaos[0]);
         gl.glEnableVertexAttribArray(this.vaos[0]);
 
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbos[0]);
         gl.glVertexAttribPointer(this.vertLoc, 3, GL.GL_FLOAT, false, 0, 0);
+
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbos[1]);
         gl.glVertexAttribPointer(this.colorLoc, 3, GL.GL_FLOAT, false, 0, 0);
 
@@ -132,7 +140,6 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
         this.colorLoc = gl.glGetAttribLocation(this.programID, "a_color");
 
         // Setup MVP Matrix
-        mMat.identity();
         aspect = (float) width / (float) height;
         view = new Matrix4f().perspective((float) Math.toRadians(60.0f), aspect, 0.1f, 1000.0f);
 
@@ -156,38 +163,44 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
         // load location for passing mvp to GLSL Vertex Shader
         mvpLoc = gl.glGetUniformLocation(this.programID, "mvp");
 
-        // Rotate Object
-        mMat.identity();
-        mMat.rotate((float) (Math.PI * k/ 100), 0,1,0);
-        k++;
+        gl.glBindVertexArray(vaos[0]);
 
-        //calculate View-Perspective Part
         aspect = (float) width / (float) height;
         view = new Matrix4f().perspective((float) Math.toRadians(60.0f), aspect, 0.1f, 1000.0f);
 
         Matrix4f fl = new Matrix4f();
-        view.lookAt(eye, center, up, fl);
+        view.lookAt(eye.get(), center.get(), up.get(), fl);
 
-        mvpMat.identity();
-        mvpMat.mul(fl);
-        mvpMat.mul(mMat);
+        for(GeometryObject currentObject : this.objectsToDraw) {
 
+            //calculate View-Perspective Part
+            // adding the model matrix
+            mvpMat.identity();
+            mvpMat.mul(fl);
+            Matrix4f mMat = currentObject.getModelMatrix().rotate(new Quaternionf().rotationXYZ((float)(Math.PI * k/ 100),
+                                                                                                (float)(Math.PI * k/ 50),
+                                                                                                (float)(Math.PI * k/ 20)));
+            mvpMat.mul(mMat);
 
-        gl.glUniformMatrix4fv(mvpLoc, 1, false, mvpMat.get(mvpBuffer));
+            gl.glUniformMatrix4fv(mvpLoc, 1, false, mvpMat.get(mvpBuffer));
 
-        gl.glBindVertexArray(vaos[0]);
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vbos[0]);
+            gl.glBufferData(GL.GL_ARRAY_BUFFER, currentObject.getBufferedVertexData().capacity() * 4L, currentObject.getBufferedVertexData(), GL.GL_STATIC_DRAW);
+            gl.glVertexAttribPointer(this.vertLoc, 3, GL.GL_FLOAT, false, 0, 0);
+            gl.glEnableVertexAttribArray(this.vertLoc);
 
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vbos[0]);
-        gl.glVertexAttribPointer(this.vertLoc, 3, GL.GL_FLOAT, false, 0, 0);
-        gl.glEnableVertexAttribArray(this.vertLoc);
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vbos[1]);
+            gl.glBufferData(GL.GL_ARRAY_BUFFER, currentObject.getBufferedColorData().capacity() * 4L, currentObject.getBufferedColorData(), GL.GL_STATIC_DRAW);
+            gl.glVertexAttribPointer(this.colorLoc, 3, GL.GL_FLOAT, false, 0, 0);
+            gl.glEnableVertexAttribArray(this.colorLoc);
 
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vbos[1]);
-        gl.glVertexAttribPointer(this.colorLoc, 3, GL.GL_FLOAT, false, 0, 0);
-        gl.glEnableVertexAttribArray(this.colorLoc);
+            gl.glDrawArrays(GL.GL_TRIANGLES, 0, currentObject.getFaces().size() * 3);
 
-        gl.glDrawArrays(GL.GL_TRIANGLES, 0, this.modelColorFloatBuffer.limit()/3);
+        }
 
         gl.glDisableVertexAttribArray(this.vertLoc);
+        gl.glDisableVertexAttribArray(this.colorLoc);
+        k++;
 
     }
 
@@ -228,37 +241,9 @@ public class ModelViewer extends GLJPanel implements GLEventListener, KeyListene
     }
 
 
-    public void setEyeX(float newX){
-        this.eye.x = newX;
-        System.out.println("New Eye Value is " + this.eye.x());
-    }
-
-    public void setEyeY(float newY){
-        this.eye.y = newY;
-        System.out.println("New Eye Value is " + this.eye.y());
-    }
-
-    public void setEyeZ(float newZ){
-        this.eye.z = newZ;
-        System.out.println("New Eye Value is " + this.eye.z());
-    }
-
-    public SimpleDoubleProperty getEyeXProperty(){
-        return this.eyeXProperty;
-    }
-    public SimpleDoubleProperty getEyeYProperty(){
-        return this.eyeYProperty;
-    }
-    public SimpleDoubleProperty getEyeZProperty(){
-        return this.eyeZProperty;
-    }
-
-    public void setBufferManager(BufferManager bufferManager){
-        this.bufferManager = bufferManager;
-    }
 
     /**
-     * Init function for GL, this is called in the beginning to setup everything gl related
+     * Init function for GL, this is called in the beginning to set up everything gl related
      * @param drawable
      */
     @Override

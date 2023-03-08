@@ -1,18 +1,17 @@
 package com.jakob.joglfx;
 
-import com.jakob.joglfx.geometry.BufferManager;
 import com.jakob.joglfx.geometry.GeometryObject;
 import com.jakob.joglfx.geometry.primitives.Cube;
 import com.jakob.joglfx.gui.SettingsPaneBuilder;
 import com.jakob.joglfx.gui.ModelViewer;
 
 import com.jakob.joglfx.model.SettingNode;
+import com.jakob.joglfx.model.scene.SceneModel;
 import com.jakob.joglfx.model.settingsitems.ContainerItem;
 import com.jakob.joglfx.model.settingsitems.FloatSettingsItem;
 import com.jakob.joglfx.object.OBJloader;
 import com.jogamp.opengl.*;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -20,12 +19,12 @@ import javafx.scene.control.*;
 
 import javafx.embed.swing.SwingNode;
 import javafx.scene.layout.VBox;
-import javafx.util.Callback;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 
 import javax.swing.*;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import static com.jakob.joglfx.model.SettingNode.*;
@@ -50,7 +49,6 @@ public class MainWindowController implements Initializable {
 
     ModelViewer modelViewer;
 
-    BufferManager bufferManager;
 
 
     @FXML
@@ -67,16 +65,12 @@ public class MainWindowController implements Initializable {
 
         splitPane.setDividerPositions(0.2, 0.85);
 
-        bufferManager = new BufferManager();
+        GeometryObject root = loadGeometryObjectRoot();
+        setupObjectTreeTableView(root);
 
-        ArrayList<GeometryObject> roots = loadGeometryObjects();
+        SceneModel sceneModel = new SceneModel(root);
 
-        bufferManager.addObjects(roots);
-
-        modelViewer = new ModelViewer(capabilities);
-        modelViewer.setBufferManager(bufferManager);
-
-        setupObjectTreeTableView(bufferManager);
+        modelViewer = new ModelViewer(capabilities, sceneModel);
 
         SwingUtilities.invokeLater(() -> {
             glcanvas.setContent(modelViewer);
@@ -92,8 +86,10 @@ public class MainWindowController implements Initializable {
         SettingNode framerateNode = createSingleSettingNode("Framerate", modelViewer.getFramerateProperty());
         glSettings.addNode(framerateNode);
 
+        sceneModel.getCamera().eyeProperty().set(new Vector3f(-5,0,5));
 
-        SettingNode eyeVectorNode = createVectorSettingNode("Eye", modelViewer.getEyeXProperty(),
+
+        /*SettingNode eyeVectorNode = createVectorSettingNode("Eye", modelViewer.getEyeXProperty(),
                 modelViewer.getEyeYProperty(),
                 modelViewer.getEyeZProperty());
         glSettings.addNode(eyeVectorNode);
@@ -102,19 +98,22 @@ public class MainWindowController implements Initializable {
                 modelViewer.getEyeYProperty(),
                 modelViewer.getEyeZProperty());
         glSettings.addNode(centerVectorNode);
-
+*/
         SettingsPaneBuilder.populatePane(glSettingsContainer, glSettings);
         glSettingsContainer.setPadding(new Insets(3));
 
     }
 
-    private ArrayList<GeometryObject> loadGeometryObjects() {
+    private GeometryObject loadGeometryObjectRoot() {
 
         GeometryObject root1 = new GeometryObject("Würfel");
         GeometryObject c1 = new GeometryObject("Container");
         c1.addChild(new Cube("Another Cube", 2,2,2, 0.25, 0.4, 1), new Cube("W1", 0,0,0, 1,1,1));
         root1.addChild(c1);
-        root1.addChild(new Cube( "W2", 1,1,1, 0.5,0.5,0.5));
+
+        Cube rotTest = new Cube( "W2", 1,1,1, 0.5,0.5,0.5);
+        rotTest.setRotation(new Quaternionf().rotateLocalX((float)(Math.PI/4)));
+        root1.addChild(rotTest);
 
         GeometryObject root2 = new GeometryObject("Andere Würfel");
         root2.addChild(new Cube("dritter Würfel", -1,1,1, 0.25, 0.25, 0.25));
@@ -122,15 +121,15 @@ public class MainWindowController implements Initializable {
         OBJloader obJloader = new OBJloader("teapot.obj");
         //root2.addChild(obJloader.load());
 
-        ArrayList<GeometryObject> temp = new ArrayList<>();
-        temp.add(root1);
-        temp.add(root2);
+        GeometryObject temp = new GeometryObject("Projekt Root");
+        temp.addChild(root1);
+        temp.addChild(root2);
 
         return temp;
 
     }
 
-    public void setupObjectTreeTableView(BufferManager bufferManager){
+    public void setupObjectTreeTableView(GeometryObject rootObject){
 
         objectTreeTable.setShowRoot(true);
 
@@ -142,26 +141,24 @@ public class MainWindowController implements Initializable {
 
         objectTreeTable.getColumns().add(nameColumn);
         objectTreeTable.getColumns().add(verticesColumn);
+        
+        
+        TreeItem<GeometryObject> rootTreeItem = new TreeItem<>(rootObject);
+        rootTreeItem.setExpanded(true);
 
-        ArrayList<GeometryObject> objects = bufferManager.getObjects();
-
-        GeometryObject rootGeometryObjectNode = new GeometryObject("Projekt");
-        rootGeometryObjectNode.addChild(objects);
-        TreeItem<GeometryObject> root = new TreeItem<>(rootGeometryObjectNode);
-
-        for(GeometryObject g: objects){
+        for(GeometryObject g: rootObject.getChildren()){
             if(g.getChildren().size() == 0){
                 TreeItem<GeometryObject> temp = new TreeItem<>(g);
-                root.getChildren().add(temp);
+                rootTreeItem.getChildren().add(temp);
             } else {
-                root.getChildren().add(populateTreeItem(g));
+                rootTreeItem.getChildren().add(populateTreeItem(g));
             }
         }
 
         nameColumn.setCellValueFactory(p -> p.getValue().getValue().nameProperty());
         verticesColumn.setCellValueFactory(p -> p.getValue().getValue().numberOfFacesProperty().asObject());
 
-        objectTreeTable.setRoot(root);
+        objectTreeTable.setRoot(rootTreeItem);
 
     }
 

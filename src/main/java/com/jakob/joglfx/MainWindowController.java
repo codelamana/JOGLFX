@@ -11,6 +11,7 @@ import com.jakob.joglfx.model.settingsitems.ContainerItem;
 import com.jakob.joglfx.model.settingsitems.FloatSettingsItem;
 import com.jakob.joglfx.object.OBJloader;
 import com.jogamp.opengl.*;
+import javafx.beans.binding.NumberExpression;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,6 +22,8 @@ import javafx.embed.swing.SwingNode;
 import javafx.scene.layout.VBox;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+
+import javax.json.*;
 
 
 import javax.swing.*;
@@ -49,7 +52,7 @@ public class MainWindowController implements Initializable {
 
     ModelViewer modelViewer;
 
-
+    GeometryObject root;
 
     @FXML
     public void onToggleAnimation(){
@@ -65,7 +68,7 @@ public class MainWindowController implements Initializable {
 
         splitPane.setDividerPositions(0.2, 0.85);
 
-        GeometryObject root = loadGeometryObjectRoot();
+        root = loadGeometryObjectRoot();
         setupObjectTreeTableView(root);
 
         SceneModel sceneModel = new SceneModel(root);
@@ -102,6 +105,45 @@ public class MainWindowController implements Initializable {
         SettingsPaneBuilder.populatePane(glSettingsContainer, glSettings);
         glSettingsContainer.setPadding(new Insets(3));
 
+        //JsonObject testObject = Json.createObjectBuilder().add("projectName", "Test Project").build();
+        //System.out.println(testObject.toString());
+
+    }
+
+    @FXML
+    public void onToJSON(){
+        System.out.println("Erstelle JSON");
+        JsonObject testObject = buildGeometryObjectJSONObject(this.root);
+        System.out.println(testObject.toString());
+    }
+
+    private JsonObject buildGeometryObjectJSONObject(GeometryObject root){
+        JsonObjectBuilder currentObject = Json.createObjectBuilder();
+
+        currentObject.add("name", root.getName());
+        currentObject.add(
+                "worldPosition" , Json.createObjectBuilder()
+                        .add("worldX", root.worldSpacePosition.x())
+                        .add("worldY", root.worldSpacePosition.y())
+                        .add("worldZ", root.worldSpacePosition.z())
+                        .build()
+        );
+        currentObject.add(
+                "rotation" , Json.createObjectBuilder()
+                        .add("rotationX", root.rotation.x())
+                        .add("rotationY", root.rotation.y())
+                        .add("rotationZ", root.rotation.z())
+                        .build()
+        );
+
+        JsonArrayBuilder children = Json.createArrayBuilder();
+        if(root.getChildren().size() != 0){
+            for(GeometryObject next : root.getChildren()) {
+                children.add(buildGeometryObjectJSONObject(next));
+            }
+        }
+        currentObject.add("children", children.build());
+        return currentObject.build();
     }
 
     private GeometryObject loadGeometryObjectRoot() {

@@ -2,6 +2,7 @@ package com.jakob.joglfx.geometry;
 
 import com.jakob.joglfx.geometry.base.Face;
 import com.jakob.joglfx.geometry.base.Vertex;
+import com.jakob.joglfx.model.animation.ObjectAnimator;
 import com.jogamp.common.nio.Buffers;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -16,27 +17,29 @@ import java.util.Objects;
 
 public class GeometryObject {
 
-    protected ArrayList<GeometryObject> children = new ArrayList<>();
+    public ArrayList<GeometryObject> children = new ArrayList<>();
 
-    protected float[] vertexData;
-    protected FloatBuffer bufferedVertexData;
+    public float[] vertexData;
+    public FloatBuffer bufferedVertexData;
 
-    protected float[] normalData;
-    protected FloatBuffer bufferedNormalData;
+    public float[] normalData;
+    public FloatBuffer bufferedNormalData;
 
-    protected float[] colorData;
-    protected FloatBuffer bufferedColorData;
+    public float[] colorData;
+    public FloatBuffer bufferedColorData;
 
-    protected ArrayList<Face> faces;
-    protected ArrayList<Vertex> vertices;
+    public ArrayList<Face> faces;
+    public ArrayList<Vertex> vertices;
 
-    protected SimpleIntegerProperty numberOfFaces;
-    protected SimpleStringProperty name;
-    protected SimpleIntegerProperty numberOfVertices;
+    public SimpleIntegerProperty numberOfFaces;
+    public SimpleStringProperty name;
+    public SimpleIntegerProperty numberOfVertices;
 
-    protected Matrix4f modelMatrix;
-    protected Vector3f worldSpacePosition;
-    protected Quaternionf rotation;
+    public Matrix4f modelMatrix;
+    public Vector3f worldSpacePosition;
+    public Quaternionf rotation;
+
+    ObjectAnimator animator;
 
     public GeometryObject(String newName) {
         this.name = new SimpleStringProperty(Objects.requireNonNullElse(newName, "Default Name"));

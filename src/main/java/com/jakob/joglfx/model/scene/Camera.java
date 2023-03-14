@@ -1,5 +1,6 @@
 package com.jakob.joglfx.model.scene;
 
+import com.jakob.joglfx.model.animation.CameraAnimator;
 import javafx.beans.property.SimpleObjectProperty;
 import org.joml.Vector3f;
 
@@ -8,6 +9,8 @@ public class Camera {
     SimpleObjectProperty<Vector3f> eye;
     SimpleObjectProperty<Vector3f> center;
     SimpleObjectProperty<Vector3f> up;
+
+    CameraAnimator animator;
 
     public Camera(Vector3f eye, Vector3f center, Vector3f up) {
         this.eye = new SimpleObjectProperty<>(eye);

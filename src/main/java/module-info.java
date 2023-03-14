@@ -10,10 +10,16 @@ module com.jakob.joglfx {
     requires javafx.swing;
     requires gluegen.rt;
     requires org.joml;
+    requires java.json;
+    requires com.google.gson;
+    requires org.glassfish.javax.json;
 
 
     opens com.jakob.joglfx to javafx.fxml;
     opens com.jakob.joglfx.model to javafx.fxml;
+    opens com.jakob.joglfx.geometry to com.google.gson;
+    //opens com.jakob.joglfx.geometry t
+    //opens java.nio to com.google.gson;
     exports com.jakob.joglfx;
     opens com.jakob.joglfx.model.settingsitems to javafx.fxml;
 }

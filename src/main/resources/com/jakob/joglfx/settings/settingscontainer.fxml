@@ -3,15 +3,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Separator maxWidth="1.7976931348623157E308" />
-            <Label fx:id="title" text="Label" />
-            <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
-            <AnchorPane VBox.vgrow="ALWAYS">
+            <Separator maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+            <Label fx:id="title" maxWidth="1.7976931348623157E308" text="Label" VBox.vgrow="ALWAYS" />
+            <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                <children>
                   <HBox fx:id="content" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>

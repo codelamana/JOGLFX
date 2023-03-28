@@ -63,7 +63,7 @@ public class VertexShader extends Shader {
             }
             System.out.println("Error creating shader");
         }
-        System.out.println("Fragment Shader compiled correctly");
+        System.out.println("Vertex Shader compiled correctly");
         return this.shader;
     }
 }

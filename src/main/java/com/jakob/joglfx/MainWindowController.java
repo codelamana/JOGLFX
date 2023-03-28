@@ -2,6 +2,7 @@ package com.jakob.joglfx;
 
 import com.jakob.joglfx.geometry.GeometryObject;
 import com.jakob.joglfx.geometry.primitives.Cube;
+import com.jakob.joglfx.gui.DetailedGeometryObjectView;
 import com.jakob.joglfx.gui.SettingsPaneBuilder;
 import com.jakob.joglfx.gui.ModelViewer;
 
@@ -13,9 +14,13 @@ import com.jakob.joglfx.object.OBJloader;
 import com.jogamp.opengl.*;
 import javafx.beans.binding.NumberExpression;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 
 import javafx.embed.swing.SwingNode;
@@ -27,6 +32,7 @@ import javax.json.*;
 
 
 import javax.swing.*;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -50,6 +56,11 @@ public class MainWindowController implements Initializable {
     @FXML
     TreeTableView<GeometryObject> objectTreeTable;
 
+    @FXML
+    TitledPane detailedGeometryObjectView;
+
+    DetailedGeometryObjectView geometryObjectViewController;
+
     ModelViewer modelViewer;
 
     GeometryObject root;
@@ -69,7 +80,10 @@ public class MainWindowController implements Initializable {
         splitPane.setDividerPositions(0.2, 0.85);
 
         root = loadGeometryObjectRoot();
+
         setupObjectTreeTableView(root);
+
+        setupDetailedGeometryObjectView(root);
 
         SceneModel sceneModel = new SceneModel(root);
 
@@ -85,30 +99,43 @@ public class MainWindowController implements Initializable {
         SettingNode glSettings = new SettingNode("GL Setting Container", new ContainerItem("GL Settings"), SettingsType.CONTAINER);
         settingsRoot.addNode(glSettings);
 
-
         SettingNode framerateNode = createSingleSettingNode("Framerate", modelViewer.getFramerateProperty());
         glSettings.addNode(framerateNode);
 
         sceneModel.getCamera().eyeProperty().set(new Vector3f(-5,0,5));
 
-
-        /*SettingNode eyeVectorNode = createVectorSettingNode("Eye", modelViewer.getEyeXProperty(),
-                modelViewer.getEyeYProperty(),
-                modelViewer.getEyeZProperty());
-        glSettings.addNode(eyeVectorNode);
-
-        SettingNode centerVectorNode = createVectorSettingNode("Center", modelViewer.getEyeXProperty(),
-                modelViewer.getEyeYProperty(),
-                modelViewer.getEyeZProperty());
-        glSettings.addNode(centerVectorNode);
-*/
         SettingsPaneBuilder.populatePane(glSettingsContainer, glSettings);
         glSettingsContainer.setPadding(new Insets(3));
 
-        //JsonObject testObject = Json.createObjectBuilder().add("projectName", "Test Project").build();
-        //System.out.println(testObject.toString());
+    }
+
+    private void setupDetailedGeometryObjectView(GeometryObject root) {
+
+        Node n;
+        geometryObjectViewController = new DetailedGeometryObjectView(root);
+
+        FXMLLoader loader = new FXMLLoader(MainWindowController.class.getResource("detailedgeometryobjectview.fxml"));
+        loader.setController(geometryObjectViewController);
+
+        try {
+            n = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        this.detailedGeometryObjectView.setContent(n);
+        this.detailedGeometryObjectView.setText("Detailed GeometryObject View");
+
+        objectTreeTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<GeometryObject>>() {
+            @Override
+            public void changed(ObservableValue<? extends TreeItem<GeometryObject>> observableValue, TreeItem<GeometryObject> geometryObjectTreeItem, TreeItem<GeometryObject> t1) {
+                geometryObjectViewController.setCurrentObject(t1.getValue());
+            }
+        });
 
     }
+
 
     @FXML
     public void onToJSON(){
@@ -201,6 +228,8 @@ public class MainWindowController implements Initializable {
         verticesColumn.setCellValueFactory(p -> p.getValue().getValue().numberOfFacesProperty().asObject());
 
         objectTreeTable.setRoot(rootTreeItem);
+
+
 
     }
 

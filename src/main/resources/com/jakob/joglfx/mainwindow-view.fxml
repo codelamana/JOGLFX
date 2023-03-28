@@ -38,7 +38,7 @@
             <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
               <items>
                   <TreeTableView fx:id="objectTreeTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
-                  <TitledPane animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="untitled">
+                  <TitledPane fx:id="detailedGeometryObjectView" animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Name">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                     </content>

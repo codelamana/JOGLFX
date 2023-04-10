@@ -1,9 +1,12 @@
 package com.jakob.joglfx;
 
 
+import com.jakob.joglfx.gui.DetailedGeometryObjectView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.PointLight;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -22,9 +25,16 @@ public class MainApp extends Application{
     @Override
     public void start(Stage stage) throws IOException {
 
-        // Load Main Window and setup
+        // Load Main Window and setup  with selected Project
+        Project testProject = ProjectLoader.getTestProject();
+
+
+        MainWindowController mainWindowController = new MainWindowController(testProject);
+
         FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("mainwindow-view.fxml"));
+        fxmlLoader.setController(mainWindowController);
         Parent p = fxmlLoader.load();
+
         Scene scene = new Scene(p, 1400, 1000);
         stage.setTitle("Hello!");
         stage.setScene(scene);

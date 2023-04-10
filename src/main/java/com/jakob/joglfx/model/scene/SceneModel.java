@@ -5,7 +5,7 @@ import com.jakob.joglfx.geometry.GeometryObject;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class SceneModel {
+public class  SceneModel {
 
     Camera camera;
     GeometryObject rootGeometryObject;

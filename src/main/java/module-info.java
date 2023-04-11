@@ -11,7 +11,7 @@ module com.jakob.joglfx {
     requires gluegen.rt;
     requires org.joml;
     requires java.json;
-    requires javax
+    requires org.glassfish.javax.json;
 
 
     opens com.jakob.joglfx to javafx.fxml;

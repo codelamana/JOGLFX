@@ -13,12 +13,22 @@ import javax.json.JsonObjectBuilder;
 
 public class ProjectLoader {
 
+    /**
+     *
+     * This class functions as manager for multiple projects and also manages selection, loading and saving of a project
+     *
+     */
+
     static String workspaceDir = "";
 
     public ProjectLoader() {
 
     }
 
+    /**
+     * Load a test project for testing purposes, contains some basic shapes
+     * @return
+     */
     public static Project getTestProject(){
 
         Project temp = new Project("Test Project");
@@ -35,6 +45,12 @@ public class ProjectLoader {
 
     }
 
+    /**
+     *
+     * Save a project by collecting all important items and serialize them in a JSON String
+     *
+     * @param project project to be saved
+     */
     public static void saveProject(Project project){
 
         JsonObjectBuilder currentObject = Json.createObjectBuilder().add("projectName", project.getProjectName());
@@ -64,9 +80,16 @@ public class ProjectLoader {
         System.out.println(currentObject.build().toString());
     }
 
+    /**
+     * Helper method for creating the JSON Object for a GeometryObject and all of its children
+     *
+     * @param root GeometryObject to be serialized
+     * @return JSONObject instance
+     */
     private static JsonObject buildGeometryObjectJSONObject(GeometryObject root){
         JsonObjectBuilder currentObject = Json.createObjectBuilder();
 
+        // add all information
         currentObject.add("name", root.getName());
         currentObject.add(
                 "worldPosition" , Json.createObjectBuilder()
@@ -83,6 +106,7 @@ public class ProjectLoader {
                         .build()
         );
 
+        // create JSON array for children and add all children by recursion
         JsonArrayBuilder children = Json.createArrayBuilder();
         if(root.getChildren().size() != 0){
             for(GeometryObject next : root.getChildren()) {
@@ -95,6 +119,11 @@ public class ProjectLoader {
     }
 
 
+    /**
+     * Helper Method for building objects in test project
+     *
+     * @return an example tree of cubes
+     */
     private static GeometryObject loadGeometryObjectRoot() {
 
         GeometryObject root1 = new GeometryObject("Würfel");

@@ -8,6 +8,12 @@ import com.jakob.joglfx.object.OBJloader;
 import org.joml.Quaternionf;
 
 public class Project {
+    /**
+     * Main class for managing and storing all data related items
+     * A project is passed to the main application and all data needed can be retrieved from the project instance
+     *
+     */
+
 
     String projectName;
 

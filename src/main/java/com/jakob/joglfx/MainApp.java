@@ -25,12 +25,13 @@ public class MainApp extends Application{
     @Override
     public void start(Stage stage) throws IOException {
 
-        // Load Main Window and setup  with selected Project
+        // Setup a test project
         Project testProject = ProjectLoader.getTestProject();
 
-
+        // Main window controller, initial project is passed
         MainWindowController mainWindowController = new MainWindowController(testProject);
 
+        // JavaFX Setup
         FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("mainwindow-view.fxml"));
         fxmlLoader.setController(mainWindowController);
         Parent p = fxmlLoader.load();

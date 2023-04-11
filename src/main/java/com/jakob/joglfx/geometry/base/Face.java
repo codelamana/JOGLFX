@@ -7,6 +7,12 @@ import java.util.ArrayList;
 
 public class Face {
 
+    /**
+     * Data class for storing a face of a polygon model
+     *
+     */
+
+    // always calulate face normal of a face
     static boolean CALC_FACE_NORMALS = true;
 
     public ArrayList<Vertex> vertices;

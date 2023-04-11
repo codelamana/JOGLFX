@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
+   <columnConstraints>
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+   </rowConstraints>
+   <children>
+      <Slider fx:id="valueSlider" blockIncrement="5.0" majorTickUnit="10.0" maxWidth="1.7976931348623157E308" minorTickCount="5" showTickLabels="true" showTickMarks="true" value="30.0" GridPane.hgrow="ALWAYS">
+         <padding>
+            <Insets left="5.0" right="5.0" />
+         </padding>
+      </Slider>
+   </children>
+</GridPane>

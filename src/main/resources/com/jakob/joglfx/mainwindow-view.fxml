@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.embed.swing.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <MenuBar>
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#onToJSON" text="To JSON" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <ToolBar prefHeight="40.0" prefWidth="200.0">
+        <items>
+          <Button fx:id="animatorToggle" mnemonicParsing="false" onAction="#onToggleAnimation" text="Button" />
+        </items>
+      </ToolBar>
+      <SplitPane fx:id="splitPane" dividerPositions="0.2995991983967936, 0.6523046092184369" VBox.vgrow="ALWAYS">
+         <items>
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+              <items>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" fx:id="treeViewContainer"/>
+                  <ScrollPane fitToWidth="true" maxWidth="1.7976931348623157E308">
+                     <content>
+                        <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                           <children>
+                              <TitledPane fx:id="detailedGeometryObjectView" animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Name" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                </content>
+                              </TitledPane>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
+              </items>
+            </SplitPane>
+            <AnchorPane>
+               <children>
+                  <SwingNode fx:id="glcanvas" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+               <items>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                     <content>
+                        <VBox fx:id="glSettingsContainer" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+                     </content>
+                  </ScrollPane>
+                  <ScrollPane prefHeight="200.0" prefWidth="200.0">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                    </content>
+                  </ScrollPane>
+               </items>
+            </SplitPane>
+         </items>
+      </SplitPane>
+      <HBox id="HBox" alignment="CENTER_LEFT" maxHeight="20.0" prefHeight="20.0" spacing="5.0">
+         <children>
+            <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">
+               <font>
+                  <Font size="11.0" fx:id="x3" />
+               </font>
+               <textFill>
+                  <Color red="0.625" green="0.625" blue="0.625" fx:id="x4" />
+               </textFill>
+            </Label>
+            <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
+            <Label font="$x3" maxWidth="-1.0" text="Right status" textFill="$x4" HBox.hgrow="NEVER" />
+         </children>
+         <padding>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+         </padding>
+      </HBox>
+   </children>
+</VBox>

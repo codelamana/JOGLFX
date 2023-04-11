@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Separator maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+      <Label fx:id="title" maxWidth="1.7976931348623157E308" text="Label" VBox.vgrow="ALWAYS" />
+      <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+      <HBox fx:id="content" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+   </children>
+</VBox>
